@@ -1,0 +1,7 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npx medusa build"
+
+[deploy]
+preDeployCommand = "npx medusa db:migrate"
+startCommand = "npx medusa start"
