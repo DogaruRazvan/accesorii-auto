@@ -4,4 +4,4 @@ buildCommand = "npm install --include=dev && npx medusa build"
 
 [deploy]
 preDeployCommand = "npx medusa db:migrate"
-startCommand = "npx medusa start"
+startCommand = "cd .medusa/server && npx medusa start"
