@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npx medusa build"
+buildCommand = "npm install --include=dev && npx medusa build"
 
 [deploy]
 preDeployCommand = "npx medusa db:migrate"
