@@ -1,7 +1,6 @@
 [build]
-builder = "nixpacks"
-buildCommand = "npm install --include=dev && npx medusa build && ls .medusa/server/public/admin/index.html"
+buildCommand = "cd apps/backend && npx medusa build"
 
 [deploy]
-preDeployCommand = "npx medusa db:migrate"
-startCommand = "cd .medusa/server && npx medusa start"
+preDeployCommand = "cd apps/backend && npx medusa db:migrate"
+startCommand = "cd apps/backend/.medusa/server && npx medusa start"
