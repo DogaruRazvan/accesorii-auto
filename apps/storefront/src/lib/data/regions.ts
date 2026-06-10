@@ -4,6 +4,10 @@ import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
 
+// Default country code used when the URL/cookie doesn't resolve to a region.
+// Our single market is Romania (RON), so fall back to "ro".
+const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "ro"
+
 export const listRegions = async () => {
   const next = {
     ...(await getCacheOptions("regions")),
@@ -51,9 +55,14 @@ export const getRegion = async (countryCode: string) => {
     })
   })
 
-  const region = countryCode
-    ? regionMap.get(countryCode)
-    : regionMap.get("us")
+  // Resolve by country code, then by configured default, and finally fall back
+  // to the first available region. This guarantees a region (and therefore
+  // products) resolves even if the region cookie/URL country isn't set or the
+  // country isn't assigned to any region in the backend.
+  const region =
+    (countryCode && regionMap.get(countryCode)) ||
+    regionMap.get(DEFAULT_REGION) ||
+    regions[0]
 
   return region
 }
