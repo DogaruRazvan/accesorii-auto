@@ -1,7 +1,6 @@
 {
   "name": "accesorii-auto",
   "private": false,
-  "packageManager": "npm@10.8.2",
   "engines": {
     "node": ">=20"
   },
