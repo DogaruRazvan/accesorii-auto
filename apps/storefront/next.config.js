@@ -1,3 +1,4 @@
+// Deploy trigger: redeploy storefront pe Railway (fix Corepack din root package.json)
 const checkEnvVariables = require("./check-env-variables")
 
 checkEnvVariables()
