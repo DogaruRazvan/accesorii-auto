@@ -88,6 +88,45 @@ export const listProducts = async ({
 }
 
 /**
+ * Cautare usoara pentru autocomplete: returneaza max 6 produse (doar
+ * id/titlu/handle/thumbnail) care se potrivesc cu textul tastat. Fara cache,
+ * ca sugestiile sa fie mereu la zi.
+ */
+export const searchProductsLight = async (
+  q: string,
+  countryCode: string
+): Promise<
+  Pick<HttpTypes.StoreProduct, "id" | "title" | "handle" | "thumbnail">[]
+> => {
+  if (!q || q.trim().length < 2) {
+    return []
+  }
+
+  const region = await getRegion(countryCode)
+  if (!region) {
+    return []
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  return sdk.client
+    .fetch<{ products: HttpTypes.StoreProduct[] }>(`/store/products`, {
+      method: "GET",
+      query: {
+        q: q.trim(),
+        limit: 6,
+        region_id: region.id,
+        fields: "id,title,handle,thumbnail",
+      },
+      headers,
+    })
+    .then(({ products }) => products)
+    .catch(() => [])
+}
+
+/**
  * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
  * It will then return the paginated products based on the page and limit parameters.
  */
