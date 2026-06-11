@@ -5,8 +5,15 @@ import Spline from "@splinetool/react-spline/next"
 // Scena 3D se seteaza prin env var ca sa o poti schimba fara cod.
 // Numele folosit in Railway e NEXT_PUBLIC_SPLINE_SCEN (fara E final);
 // pastram si varianta cu E ca fallback.
-const SPLINE_SCENE =
-  process.env.NEXT_PUBLIC_SPLINE_SCEN || process.env.NEXT_PUBLIC_SPLINE_SCENE
+const RAW_SCENE = (
+  process.env.NEXT_PUBLIC_SPLINE_SCEN ||
+  process.env.NEXT_PUBLIC_SPLINE_SCENE ||
+  ""
+).trim()
+
+// Spline accepta DOAR fisiere .splinecode exportate din panoul Export.
+// Daca s-a pus alt link (editor/preview), il ignoram ca sa nu crape pagina.
+const SPLINE_SCENE = RAW_SCENE.endsWith(".splinecode") ? RAW_SCENE : undefined
 
 const Hero = () => {
   return (
