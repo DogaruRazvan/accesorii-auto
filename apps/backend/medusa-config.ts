@@ -25,6 +25,32 @@ if (process.env.STRIPE_API_KEY) {
   })
 }
 
+// Storage imagini pe S3-compatibil (Cloudflare R2). Se activeaza DOAR cand sunt
+// setate cheile S3; altfel ramane providerul local implicit. Pe Railway discul
+// e efemer, deci pentru productie acest provider e obligatoriu (imaginile
+// persista in R2, nu se pierd la redeploy).
+if (process.env.S3_ACCESS_KEY_ID) {
+  modules.push({
+    resolve: "@medusajs/medusa/file",
+    options: {
+      providers: [
+        {
+          resolve: "@medusajs/medusa/file-s3",
+          id: "s3",
+          options: {
+            file_url: process.env.S3_FILE_URL,
+            access_key_id: process.env.S3_ACCESS_KEY_ID,
+            secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+            region: process.env.S3_REGION || "auto",
+            bucket: process.env.S3_BUCKET,
+            endpoint: process.env.S3_ENDPOINT,
+          },
+        },
+      ],
+    },
+  })
+}
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
