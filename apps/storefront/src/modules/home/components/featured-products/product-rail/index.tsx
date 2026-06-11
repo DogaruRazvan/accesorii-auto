@@ -3,6 +3,7 @@ import { HttpTypes } from "@medusajs/types"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
+import ProductCarousel from "@modules/home/components/featured-products/product-carousel"
 
 export default async function ProductRail({
   collection,
@@ -26,16 +27,19 @@ export default async function ProductRail({
   }
 
   return (
-    <div className="content-container py-12 small:py-20">
-      <div className="flex items-end justify-between mb-8 small:mb-10">
+    <section className="content-container py-12 small:py-16">
+      <div className="flex items-end justify-between mb-7">
         <div>
-          <h2 className="text-2xl small:text-3xl font-bold text-gray-950 tracking-tight">
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-brand-accent">
+            Colecție
+          </span>
+          <h2 className="text-2xl small:text-3xl font-bold tracking-tight text-gray-950 mt-1.5">
             {collection.title}
           </h2>
         </div>
         <LocalizedClientLink
           href={`/collections/${collection.handle}`}
-          className="group inline-flex items-center gap-1 text-sm font-medium text-brand-secondary hover:text-brand-primary transition-colors"
+          className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-950 transition-colors shrink-0"
         >
           Vezi toate
           <svg
@@ -54,13 +58,17 @@ export default async function ProductRail({
           </svg>
         </LocalizedClientLink>
       </div>
-      <ul className="grid grid-cols-2 small:grid-cols-3 medium:grid-cols-4 gap-x-5 gap-y-10 small:gap-y-12">
+
+      <ProductCarousel>
         {pricedProducts.map((product) => (
-          <li key={product.id}>
+          <li
+            key={product.id}
+            className="snap-start shrink-0 w-[62%] xsmall:w-[44%] small:w-[30%] medium:w-[23.5%]"
+          >
             <ProductPreview product={product} region={region} isFeatured />
           </li>
         ))}
-      </ul>
-    </div>
+      </ProductCarousel>
+    </section>
   )
 }
