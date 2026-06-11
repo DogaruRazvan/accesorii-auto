@@ -82,9 +82,10 @@ const CartDropdown = ({
       <Popover className="relative h-full">
         <PopoverButton className="h-full flex items-center">
           <LocalizedClientLink
-            className="relative flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+            className="relative flex items-center text-gray-600 transition-all duration-200 hover:text-brand-primary hover:scale-110"
             href="/cart"
             data-testid="nav-cart-link"
+            aria-label="Coș"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
