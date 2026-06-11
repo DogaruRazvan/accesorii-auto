@@ -1,4 +1,4 @@
-// Deploy trigger: redeploy storefront pe Railway (fix Corepack din root package.json)
+// Deploy trigger: redeploy storefront pe Railway (sync lock-file pentru Spline)
 const checkEnvVariables = require("./check-env-variables")
 
 checkEnvVariables()
