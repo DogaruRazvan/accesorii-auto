@@ -59,8 +59,8 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
           </button>
         </div>
 
-        {/* Links */}
-        <nav className="flex flex-col px-4 py-6 gap-y-2.5">
+        {/* Links — minimalist */}
+        <nav className="flex flex-col px-6 py-8">
           {[
             { label: "Acasă", href: "/" },
             { label: "Magazin", href: "/store" },
@@ -72,13 +72,10 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
               key={href + label}
               href={href}
               onClick={() => setOpen(false)}
-              className="group flex items-center justify-between px-4 py-3.5 rounded-2xl text-base font-medium text-white bg-white/10 border border-white/15 transition-all duration-200 hover:bg-white/25 active:scale-[0.96] active:bg-white/30"
+              className="py-4 text-lg font-light text-white/90 border-b border-white/10 transition-all duration-200 hover:text-white hover:pl-2 active:opacity-60"
               data-testid={`${label.toLowerCase()}-link`}
             >
               {label}
-              <svg className="opacity-60 transition-transform duration-200 group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
             </LocalizedClientLink>
           ))}
         </nav>
