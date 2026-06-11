@@ -23,23 +23,9 @@ const BENEFITS = [
 
 const Hero = () => {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-brand-dark via-brand-primary to-brand-secondary">
-      {/* Blob-uri gradient animate */}
-      <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full bg-brand-secondary/30 blur-[120px] animate-pulse" />
-      <div className="absolute -bottom-1/4 -right-1/4 w-[55vw] h-[55vw] rounded-full bg-brand-accent/20 blur-[120px] animate-pulse [animation-delay:1.5s]" />
-
-      {/* Spotlight in spatele cutiei */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_60%)] z-10" />
-
-      {/* Textura grid subtila */}
-      <div
-        className="absolute inset-0 z-10 opacity-[0.07]"
-        style={{
-          backgroundImage:
-            "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
+    <div className="relative min-h-screen w-full overflow-hidden bg-brand-dark">
+      {/* Spotlight discret in spatele cutiei -> profunzime, dar minimalist */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_65%)] z-10" />
 
       {/* Stratul 3D Spline — vedeta din mijloc */}
       {SPLINE_SCENE && (
