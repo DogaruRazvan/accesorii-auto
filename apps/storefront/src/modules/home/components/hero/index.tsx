@@ -50,11 +50,14 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* Stratul 3D Spline DEASUPRA textului, centrat. pointer-events-none ca
-          sa nu blocheze butonul de dedesubt. Canvas transparent -> textul si
-          gradientul se vad in spate. */}
+      {/* Stratul 3D Spline DEASUPRA textului. pointer-events-none ca sa nu
+          blocheze butonul de dedesubt. Canvas transparent -> textul si
+          gradientul se vad in spate.
+          Obiectul apare decentrat (camera scenei priveste din lateral), asa
+          ca il impingem spre dreapta cu un translate ca sa ajunga in mijloc.
+          Regleaza valoarea translate-x daca nu e fix pe centru. */}
       {SPLINE_SCENE && (
-        <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+        <div className="absolute inset-0 z-30 pointer-events-none translate-x-[18%]">
           <Spline scene={SPLINE_SCENE} />
         </div>
       )}
