@@ -23,9 +23,21 @@ const BENEFITS = [
 
 const Hero = () => {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-brand-dark">
-      {/* Spotlight discret in spatele cutiei -> profunzime, dar minimalist */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55vw] h-[55vw] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_65%)] z-10" />
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#0A0A0E]">
+      {/* Glow difuz in spatele cutiei -> o pune in valoare (stil Apple/Linear) */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[65vw] h-[65vw] rounded-full bg-[radial-gradient(circle,rgba(120,140,200,0.16),rgba(255,255,255,0.05)_30%,transparent_65%)] z-10" />
+
+      {/* Vigneta -> intuneca marginile, focalizeaza centrul */}
+      <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.55))]" />
+
+      {/* Film grain fin -> textura premium, fara asset extern */}
+      <div
+        className="absolute inset-0 z-10 opacity-[0.10] mix-blend-soft-light pointer-events-none"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+        }}
+      />
 
       {/* Stratul 3D Spline — vedeta din mijloc */}
       {SPLINE_SCENE && (
