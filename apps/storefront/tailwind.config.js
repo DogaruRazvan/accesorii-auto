@@ -33,6 +33,14 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+        // Paleta brand MENV Divers — schimbă valorile când ai paleta oficială
+        brand: {
+          primary: "#1E3A5F",   // navy închis — culoarea principală
+          secondary: "#2563EB", // albastru — butoane, linkuri active
+          accent: "#F97316",    // portocaliu — CTA, highlight-uri
+          light: "#EFF6FF",     // fundal albăstrui-deschis
+          dark: "#0F172A",      // text dark / fundal header
+        },
       },
       borderRadius: {
         none: "0px",
