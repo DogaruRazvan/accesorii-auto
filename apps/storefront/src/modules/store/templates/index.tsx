@@ -3,6 +3,8 @@ import { Suspense } from "react"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import StoreSearch from "@modules/store/components/store-search"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 import PaginatedProducts from "./paginated-products"
 
@@ -10,31 +12,51 @@ const StoreTemplate = ({
   sortBy,
   page,
   countryCode,
+  searchQuery,
 }: {
   sortBy?: SortOptions
   page?: string
   countryCode: string
+  searchQuery?: string
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
 
   return (
-    <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
-      data-testid="category-container"
-    >
-      <RefinementList sortBy={sort} />
-      <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">All products</h1>
+    <div className="content-container py-8" data-testid="category-container">
+      {/* Header */}
+      <div className="flex flex-col gap-6 mb-8">
+        <LocalizedClientLink
+          href="/store"
+          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-brand-primary transition-colors w-fit"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+          Înapoi la magazin
+        </LocalizedClientLink>
+
+        <StoreSearch defaultValue={searchQuery} />
+
+        <h1
+          className="text-3xl font-bold text-gray-900 tracking-tight"
+          data-testid="store-page-title"
+        >
+          {searchQuery ? `Rezultate pentru „${searchQuery}”` : "Toate produsele"}
+        </h1>
+      </div>
+
+      {/* Sort + grid */}
+      <div className="flex flex-col small:flex-row small:items-start">
+        <RefinementList sortBy={sort} />
+        <div className="w-full">
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+              searchQuery={searchQuery}
+            />
+          </Suspense>
         </div>
-        <Suspense fallback={<SkeletonProductGrid />}>
-          <PaginatedProducts
-            sortBy={sort}
-            page={pageNumber}
-            countryCode={countryCode}
-          />
-        </Suspense>
       </div>
     </div>
   )

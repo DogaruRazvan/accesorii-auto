@@ -38,7 +38,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
       <div
         className={`fixed top-0 left-0 h-full w-[82%] max-w-xs z-[70] transform transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
-        } bg-white/60 backdrop-blur-3xl backdrop-saturate-200 border-r border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.12)]`}
+        } bg-white/95 backdrop-blur-2xl backdrop-saturate-150 border-r border-gray-200/50 shadow-[0_8px_40px_rgba(0,0,0,0.18)]`}
         data-testid="nav-menu-popup"
       >
         {/* Header */}

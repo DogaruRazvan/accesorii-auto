@@ -27,7 +27,6 @@ export default async function Nav() {
             </LocalizedClientLink>
             <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-gray-600">
               <NavLink href="/store">Magazin</NavLink>
-              <NavLink href="/store">Categorii</NavLink>
             </div>
           </div>
 
