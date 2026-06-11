@@ -15,53 +15,99 @@ const RAW_SCENE = (
 // Daca s-a pus alt link (editor/preview), il ignoram ca sa nu crape pagina.
 const SPLINE_SCENE = RAW_SCENE.endsWith(".splinecode") ? RAW_SCENE : undefined
 
+const BENEFITS = [
+  { label: "Livrare rapidă", icon: "M5 12h14M13 6l6 6-6 6" },
+  { label: "Plată ramburs", icon: "M3 10h18M3 6h18v12H3z" },
+  { label: "Retur 14 zile", icon: "M3 12a9 9 0 1 0 3-6.7L3 8" },
+]
+
 const Hero = () => {
   return (
-    <div className="relative h-[85vh] w-full overflow-hidden bg-gradient-to-br from-brand-dark via-brand-primary to-brand-secondary">
-      {/* Decoratiuni gradient (mereu in spate, se vad si cat se incarca Spline) */}
-      <div className="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_25%_25%,white,transparent_40%)]" />
-      <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_75%_60%,#F97316,transparent_45%)]" />
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-brand-dark via-brand-primary to-brand-secondary">
+      {/* Blob-uri gradient animate */}
+      <div className="absolute -top-1/4 -left-1/4 w-[60vw] h-[60vw] rounded-full bg-brand-secondary/30 blur-[120px] animate-pulse" />
+      <div className="absolute -bottom-1/4 -right-1/4 w-[55vw] h-[55vw] rounded-full bg-brand-accent/20 blur-[120px] animate-pulse [animation-delay:1.5s]" />
 
-      {/* Overlay gradient pentru lizibilitate text */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
+      {/* Spotlight in spatele cutiei */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.18),transparent_60%)] z-10" />
 
-      {/* Continut text (sub cutia 3D) */}
-      <div className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-6 gap-6 pointer-events-none">
-        <span className="text-xs tracking-[0.4em] uppercase text-white/70 font-medium">
-          MENV Divers
-        </span>
-        <h1 className="text-4xl small:text-7xl font-bold text-white tracking-tight max-w-4xl leading-[1.05] drop-shadow-lg">
-          Tot ce ai nevoie
-          <br />
-          pentru mașina ta
-        </h1>
-        <p className="text-white/80 text-lg small:text-xl max-w-xl">
-          Accesorii auto alese cu grijă, livrate rapid.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3 mt-2 pointer-events-auto">
-          <LocalizedClientLink href="/store">
-            <Button
-              variant="secondary"
-              className="!bg-white !text-brand-primary hover:!bg-brand-light !border-0 shadow-xl transition-transform hover:scale-105 active:scale-95"
-            >
-              Vezi produsele
-            </Button>
-          </LocalizedClientLink>
-        </div>
-      </div>
+      {/* Textura grid subtila */}
+      <div
+        className="absolute inset-0 z-10 opacity-[0.07]"
+        style={{
+          backgroundImage:
+            "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
 
-      {/* Stratul 3D Spline DEASUPRA textului. pointer-events-none ca sa nu
-          blocheze butonul de dedesubt. Canvas transparent -> textul si
-          gradientul se vad in spate. Canvas centrat (fara offset) -> pozitia
-          cutiei se regleaza direct din Spline (Transform > Position). */}
+      {/* Stratul 3D Spline — vedeta din mijloc */}
       {SPLINE_SCENE && (
-        <div className="absolute inset-0 z-30 pointer-events-none">
+        <div className="absolute inset-0 z-20 pointer-events-none">
           <Spline scene={SPLINE_SCENE} />
         </div>
       )}
 
+      {/* Continut: titlu sus, CTA jos -> cutia pluteste in golul din mijloc */}
+      <div className="relative z-30 min-h-screen flex flex-col justify-between items-center text-center px-6 py-20 small:py-24 pointer-events-none">
+
+        {/* SUS — eyebrow + titlu */}
+        <div className="flex flex-col items-center gap-4 max-w-4xl">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[11px] tracking-[0.3em] uppercase text-white/80 font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-accent animate-pulse" />
+            MENV Divers
+          </span>
+          <h1 className="text-4xl small:text-7xl font-bold text-white tracking-tight leading-[1.05] [text-shadow:_0_4px_30px_rgb(0_0_0_/_45%)]">
+            Tot ce ai nevoie
+            <br />
+            pentru{" "}
+            <span className="bg-gradient-to-r from-brand-accent to-amber-300 bg-clip-text text-transparent">
+              mașina ta
+            </span>
+          </h1>
+        </div>
+
+        {/* JOS — subtitlu, CTA, beneficii */}
+        <div className="flex flex-col items-center gap-7 max-w-xl">
+          <p className="text-white/85 text-lg small:text-xl [text-shadow:_0_2px_16px_rgb(0_0_0_/_55%)]">
+            Accesorii auto alese cu grijă, livrate rapid oriunde în țară.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pointer-events-auto">
+            <LocalizedClientLink href="/store">
+              <Button
+                variant="secondary"
+                className="!bg-white !text-brand-primary hover:!bg-brand-light !border-0 shadow-2xl !px-8 !py-3.5 transition-transform hover:scale-105 active:scale-95"
+              >
+                Vezi produsele
+              </Button>
+            </LocalizedClientLink>
+            <LocalizedClientLink href="/store?view=all">
+              <Button
+                variant="secondary"
+                className="!bg-white/10 !text-white hover:!bg-white/20 !border !border-white/30 backdrop-blur-sm shadow-lg !px-8 !py-3.5 transition-transform hover:scale-105 active:scale-95"
+              >
+                Toate produsele
+              </Button>
+            </LocalizedClientLink>
+          </div>
+
+          {/* Beneficii */}
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/70 text-sm">
+            {BENEFITS.map((b) => (
+              <span key={b.label} className="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d={b.icon} />
+                </svg>
+                {b.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Indicator scroll */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
         <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
           <div className="w-1 h-2 rounded-full bg-white/70 animate-bounce" />
         </div>
