@@ -56,11 +56,10 @@ const Hero = () => {
             MENV Divers
           </span>
           <h1 className="text-4xl small:text-7xl font-bold text-white tracking-tight leading-[1.05] [text-shadow:_0_4px_30px_rgb(0_0_0_/_45%)]">
-            Tot ce ai nevoie
+            Tot ce ai nevoie,
             <br />
-            pentru{" "}
             <span className="bg-gradient-to-r from-brand-accent to-amber-300 bg-clip-text text-transparent">
-              mașina ta
+              într-un singur loc
             </span>
           </h1>
         </div>
@@ -68,7 +67,7 @@ const Hero = () => {
         {/* JOS — subtitlu, CTA, beneficii */}
         <div className="flex flex-col items-center gap-7 max-w-xl">
           <p className="text-white/85 text-lg small:text-xl [text-shadow:_0_2px_16px_rgb(0_0_0_/_55%)]">
-            Accesorii auto alese cu grijă, livrate rapid oriunde în țară.
+            Mii de produse din toate categoriile, livrate rapid oriunde în țară.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pointer-events-auto">

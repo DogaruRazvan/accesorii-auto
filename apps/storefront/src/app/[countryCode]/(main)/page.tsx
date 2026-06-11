@@ -6,8 +6,9 @@ import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "MENV Divers — Accesorii auto",
-  description: "Accesorii auto de calitate. Comandă online cu livrare rapidă.",
+  title: "MENV Divers — Tot ce ai nevoie, într-un singur loc",
+  description:
+    "Mii de produse din toate categoriile. Comandă online cu livrare rapidă în toată țara.",
 }
 
 export default async function Home(props: {

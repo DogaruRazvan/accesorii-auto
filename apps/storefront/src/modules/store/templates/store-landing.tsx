@@ -47,11 +47,11 @@ export default async function StoreLanding({
             MENV Divers
           </span>
           <h1 className="text-4xl small:text-6xl font-bold text-white tracking-tight max-w-3xl leading-tight">
-            Tot ce ai nevoie pentru mașina ta
+            Tot ce ai nevoie, într-un singur loc
           </h1>
           <p className="text-brand-light/80 text-lg max-w-xl">
-            Accesorii auto alese cu grijă. Răsfoiește categoriile sau caută
-            direct produsul dorit.
+            Produse din toate categoriile, alese cu grijă. Răsfoiește
+            categoriile sau caută direct produsul dorit.
           </p>
           <div className="w-full mt-4">
             <StoreSearch />
