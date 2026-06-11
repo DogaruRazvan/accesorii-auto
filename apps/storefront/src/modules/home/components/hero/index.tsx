@@ -52,12 +52,10 @@ const Hero = () => {
 
       {/* Stratul 3D Spline DEASUPRA textului. pointer-events-none ca sa nu
           blocheze butonul de dedesubt. Canvas transparent -> textul si
-          gradientul se vad in spate.
-          Obiectul apare decentrat (camera scenei priveste din lateral), asa
-          ca il impingem spre dreapta cu un translate ca sa ajunga in mijloc.
-          Regleaza valoarea translate-x daca nu e fix pe centru. */}
+          gradientul se vad in spate. Canvas centrat (fara offset) -> pozitia
+          cutiei se regleaza direct din Spline (Transform > Position). */}
       {SPLINE_SCENE && (
-        <div className="absolute inset-0 z-30 pointer-events-none translate-x-[18%]">
+        <div className="absolute inset-0 z-30 pointer-events-none">
           <Spline scene={SPLINE_SCENE} />
         </div>
       )}
