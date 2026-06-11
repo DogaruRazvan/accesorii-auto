@@ -2,19 +2,27 @@ import { listCategories } from "@lib/data/categories"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
+import { clx } from "@modules/common/components/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
 import StoreSearch from "@modules/store/components/store-search"
 
-// Gradiente brand alternate pentru cardurile de categorie (look tip revista)
-const CARD_GRADIENTS = [
-  "from-brand-primary to-brand-secondary",
-  "from-brand-dark to-brand-primary",
-  "from-brand-secondary to-brand-accent",
-  "from-brand-accent to-brand-primary",
-  "from-brand-primary to-brand-dark",
-  "from-brand-secondary to-brand-primary",
-]
+const ArrowRight = ({ className = "" }: { className?: string }) => (
+  <svg
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="9 18 15 12 9 6" />
+  </svg>
+)
 
 export default async function StoreLanding({
   countryCode,
@@ -38,89 +46,82 @@ export default async function StoreLanding({
   }
 
   return (
-    <div className="w-full">
-      {/* HERO */}
-      <section className="relative bg-gradient-to-br from-brand-dark via-brand-primary to-brand-secondary overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_30%_20%,white,transparent_45%)]" />
-        <div className="content-container relative py-20 small:py-28 flex flex-col items-center text-center gap-6">
-          <span className="text-xs tracking-[0.3em] uppercase text-brand-light/80 font-medium">
-            MENV Divers
-          </span>
-          <h1 className="text-4xl small:text-6xl font-bold text-white tracking-tight max-w-3xl leading-tight">
-            Tot ce ai nevoie, într-un singur loc
-          </h1>
-          <p className="text-brand-light/80 text-lg max-w-xl">
-            Produse din toate categoriile, alese cu grijă. Răsfoiește
-            categoriile sau caută direct produsul dorit.
-          </p>
-          <div className="w-full mt-4">
-            <StoreSearch />
-          </div>
-          {/* Butoane rapide */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-            <LocalizedClientLink
-              href="/store?view=all"
-              className="px-6 py-3 rounded-full bg-white text-brand-primary text-sm font-semibold shadow-lg transition-all hover:scale-105 active:scale-95"
-            >
-              Toate produsele
-            </LocalizedClientLink>
-            <a
-              href="#recomandare"
-              className="px-6 py-3 rounded-full border border-white/40 text-white text-sm font-semibold transition-all hover:bg-white/10 active:scale-95"
-            >
-              Recomandarea noastră
-            </a>
-            <a
-              href="#categorii"
-              className="px-6 py-3 rounded-full border border-white/40 text-white text-sm font-semibold transition-all hover:bg-white/10 active:scale-95"
-            >
-              Categorii
-            </a>
-          </div>
+    <div className="w-full bg-white">
+      {/* INTRO — alb, aerisit, stil Apple/Google */}
+      <section className="content-container pt-16 pb-10 small:pt-24 small:pb-16 flex flex-col items-center text-center gap-5">
+        <span className="text-xs font-semibold tracking-[0.25em] uppercase text-brand-accent">
+          Magazin
+        </span>
+        <h1 className="text-4xl small:text-6xl font-bold tracking-tight text-gray-950 max-w-3xl leading-[1.05]">
+          Tot ce ai nevoie,
+          <br className="hidden small:block" /> într-un singur loc
+        </h1>
+        <p className="text-lg text-gray-500 max-w-xl">
+          Răsfoiește categoriile sau caută direct produsul dorit.
+        </p>
+        <div className="w-full mt-3">
+          <StoreSearch />
         </div>
       </section>
 
-      {/* CATEGORII — magazine grid */}
-      <section id="categorii" className="content-container py-16 small:py-24">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <h2 className="text-3xl small:text-4xl font-bold text-gray-900 tracking-tight">
-              Categorii
-            </h2>
-            <p className="text-gray-500 mt-2">Alege o categorie și explorează</p>
-          </div>
+      {/* CATEGORII — bento grid (light + tile-uri inchise cu accent auriu) */}
+      <section id="categorii" className="content-container pb-16 small:pb-24">
+        <div className="flex items-end justify-between mb-7 small:mb-9">
+          <h2 className="text-2xl small:text-3xl font-bold tracking-tight text-gray-950">
+            Cumpără pe categorii
+          </h2>
           <LocalizedClientLink
             href="/store?view=all"
-            className="hidden small:inline-flex items-center gap-1 text-sm font-medium text-brand-secondary hover:text-brand-primary transition-colors"
+            className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-950 transition-colors"
           >
             Vezi toate produsele
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+            <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
           </LocalizedClientLink>
         </div>
 
         {topCategories.length > 0 ? (
-          <div className="grid grid-cols-1 small:grid-cols-2 medium:grid-cols-3 gap-6 auto-rows-[200px]">
-            {topCategories.map((cat, i) => (
-              <LocalizedClientLink
-                key={cat.id}
-                href={`/categories/${cat.handle}`}
-                className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br ${
-                  CARD_GRADIENTS[i % CARD_GRADIENTS.length]
-                } ${i % 5 === 0 ? "medium:col-span-2" : ""} shadow-md transition-all duration-300 hover:shadow-2xl hover:-translate-y-1`}
-              >
-                <div className="absolute inset-0 bg-black/10 transition-opacity group-hover:bg-black/0" />
-                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_80%_20%,white,transparent_50%)]" />
-                <div className="relative h-full flex flex-col justify-end p-7">
-                  <h3 className="text-2xl font-bold text-white tracking-tight">
+          <div className="grid grid-cols-2 medium:grid-cols-3 gap-4 small:gap-5 auto-rows-[170px] small:auto-rows-[220px]">
+            {topCategories.map((cat, i) => {
+              const dark = i % 5 === 0
+              const wide = i % 5 === 0
+              return (
+                <LocalizedClientLink
+                  key={cat.id}
+                  href={`/categories/${cat.handle}`}
+                  className={clx(
+                    "group relative overflow-hidden rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1",
+                    wide && "col-span-2",
+                    dark
+                      ? "bg-[#0A0A0E] shadow-lg"
+                      : "bg-gray-50 border border-gray-100 hover:bg-gray-100 hover:shadow-md"
+                  )}
+                >
+                  {dark && (
+                    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_85%_15%,rgba(217,164,65,0.35),transparent_55%)]" />
+                  )}
+                  <div className="relative flex justify-end">
+                    <span
+                      className={clx(
+                        "flex items-center justify-center w-9 h-9 rounded-full transition-all duration-300 group-hover:rotate-[-45deg]",
+                        dark
+                          ? "bg-white/10 text-brand-accent"
+                          : "bg-white text-gray-400 group-hover:text-brand-accent shadow-sm"
+                      )}
+                    >
+                      <ArrowRight />
+                    </span>
+                  </div>
+                  <h3
+                    className={clx(
+                      "relative text-xl small:text-2xl font-bold tracking-tight",
+                      dark ? "text-white" : "text-gray-950"
+                    )}
+                  >
                     {cat.name}
                   </h3>
-                  <span className="inline-flex items-center gap-1 text-white/80 text-sm mt-1 transition-transform group-hover:translate-x-1">
-                    Explorează
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
-                  </span>
-                </div>
-              </LocalizedClientLink>
-            ))}
+                </LocalizedClientLink>
+              )
+            })}
           </div>
         ) : (
           <div className="rounded-3xl border border-dashed border-gray-200 py-16 text-center text-gray-400">
@@ -133,25 +134,27 @@ export default async function StoreLanding({
       {featured.length > 0 && region && (
         <section
           id="recomandare"
-          className="bg-brand-light/40 border-y border-gray-100"
+          className="border-t border-gray-100 bg-gray-50/50"
         >
           <div className="content-container py-16 small:py-24">
-            <div className="flex items-end justify-between mb-10">
+            <div className="flex items-end justify-between mb-8 small:mb-10">
               <div>
-                <h2 className="text-3xl small:text-4xl font-bold text-gray-900 tracking-tight">
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-brand-accent">
+                  Selecția noastră
+                </span>
+                <h2 className="text-2xl small:text-3xl font-bold tracking-tight text-gray-950 mt-2">
                   Recomandarea noastră
                 </h2>
-                <p className="text-gray-500 mt-2">Produse alese special pentru tine</p>
               </div>
               <LocalizedClientLink
                 href="/store?view=all"
-                className="hidden small:inline-flex items-center gap-1 text-sm font-medium text-brand-secondary hover:text-brand-primary transition-colors"
+                className="group hidden small:inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-950 transition-colors"
               >
                 Vezi tot
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
               </LocalizedClientLink>
             </div>
-            <ul className="grid grid-cols-2 medium:grid-cols-4 gap-x-6 gap-y-8">
+            <ul className="grid grid-cols-2 medium:grid-cols-4 gap-x-5 gap-y-10 small:gap-y-12">
               {featured.map((p) => (
                 <li key={p.id}>
                   <ProductPreview product={p} region={region} isFeatured />
@@ -162,20 +165,22 @@ export default async function StoreLanding({
         </section>
       )}
 
-      {/* CTA final */}
-      <section className="content-container py-16 small:py-20 text-center">
-        <h2 className="text-2xl small:text-3xl font-bold text-gray-900">
-          Nu știi exact ce cauți?
-        </h2>
-        <p className="text-gray-500 mt-2 mb-6">
-          Răsfoiește întreaga gamă de produse.
-        </p>
-        <LocalizedClientLink
-          href="/store?view=all"
-          className="inline-flex px-8 py-4 rounded-full bg-brand-primary text-white font-semibold shadow-lg transition-all hover:bg-brand-secondary hover:scale-105 active:scale-95"
-        >
-          Vezi toate produsele
-        </LocalizedClientLink>
+      {/* CTA final — band inchis, leaga pagina de brand */}
+      <section className="bg-[#0A0A0E]">
+        <div className="content-container py-16 small:py-24 text-center flex flex-col items-center gap-5">
+          <h2 className="text-2xl small:text-4xl font-bold tracking-tight text-white max-w-lg">
+            Nu știi exact ce cauți?
+          </h2>
+          <p className="text-white/60 max-w-md">
+            Răsfoiește întreaga gamă de produse, din toate categoriile.
+          </p>
+          <LocalizedClientLink
+            href="/store?view=all"
+            className="inline-flex mt-2 px-8 py-4 rounded-full bg-white text-gray-950 font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+          >
+            Vezi toate produsele
+          </LocalizedClientLink>
+        </div>
       </section>
     </div>
   )

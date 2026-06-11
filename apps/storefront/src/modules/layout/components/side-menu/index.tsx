@@ -1,6 +1,7 @@
 "use client"
 
 import { HttpTypes } from "@medusajs/types"
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useState } from "react"
 
@@ -16,7 +17,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
       {/* Hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="flex flex-col gap-[5px] p-1 text-gray-900 transition-opacity hover:opacity-60"
+        className="flex flex-col gap-[5px] p-1 text-white transition-opacity hover:opacity-70"
         data-testid="nav-menu-button"
         aria-label="Deschide meniu"
       >
@@ -27,28 +28,32 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
 
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/10 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-black/40 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setOpen(false)}
         data-testid="side-menu-backdrop"
       />
 
-      {/* Drawer — Apple liquid glass (frosted white) */}
+      {/* Drawer — dark, asortat cu logo-ul auriu */}
       <div
         className={`fixed top-0 left-0 h-full w-[82%] max-w-xs z-[70] transform transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
-        } bg-white/95 backdrop-blur-2xl backdrop-saturate-150 border-r border-gray-200/50 shadow-[0_8px_40px_rgba(0,0,0,0.18)]`}
+        } bg-[#0A0A0E]/95 backdrop-blur-2xl border-r border-white/10 shadow-[0_8px_40px_rgba(0,0,0,0.5)]`}
         data-testid="nav-menu-popup"
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-7 h-16">
-          <span className="font-semibold tracking-wide uppercase text-gray-900 text-sm">
-            MENV Divers
-          </span>
+        {/* Header cu logo */}
+        <div className="flex items-center justify-between px-6 h-20 border-b border-white/10">
+          <Image
+            src="/logo.png"
+            alt="MENV Divers"
+            width={120}
+            height={118}
+            className="h-12 w-auto object-contain"
+          />
           <button
             onClick={() => setOpen(false)}
-            className="p-1 text-gray-500 transition-all duration-200 hover:text-gray-900 active:scale-90"
+            className="p-1 text-white/60 transition-all duration-200 hover:text-white active:scale-90"
             data-testid="close-menu-button"
             aria-label="Închide meniu"
           >
@@ -59,8 +64,8 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
           </button>
         </div>
 
-        {/* Links — minimalist black & white */}
-        <nav className="flex flex-col px-7 mt-4">
+        {/* Links — minimalist pe fundal inchis */}
+        <nav className="flex flex-col px-7 mt-6">
           {[
             { label: "Acasă", href: "/" },
             { label: "Magazin", href: "/store" },
@@ -72,7 +77,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
               key={href + label}
               href={href}
               onClick={() => setOpen(false)}
-              className="py-4 text-2xl font-light tracking-tight text-gray-900 transition-all duration-200 hover:pl-1.5 hover:opacity-100 opacity-80 active:opacity-50"
+              className="py-4 text-2xl font-light tracking-tight text-white/85 transition-all duration-200 hover:pl-1.5 hover:text-white active:opacity-50"
               data-testid={`${label.toLowerCase()}-link`}
             >
               {label}
