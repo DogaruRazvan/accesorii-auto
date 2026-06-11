@@ -3,8 +3,10 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spline from "@splinetool/react-spline/next"
 
 // Scena 3D se seteaza prin env var ca sa o poti schimba fara cod.
-// Ex: NEXT_PUBLIC_SPLINE_SCENE=https://prod.spline.design/XXXX/scene.splinecode
-const SPLINE_SCENE = process.env.NEXT_PUBLIC_SPLINE_SCENE
+// Numele folosit in Railway e NEXT_PUBLIC_SPLINE_SCEN (fara E final);
+// pastram si varianta cu E ca fallback.
+const SPLINE_SCENE =
+  process.env.NEXT_PUBLIC_SPLINE_SCEN || process.env.NEXT_PUBLIC_SPLINE_SCENE
 
 const Hero = () => {
   return (
