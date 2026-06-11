@@ -22,18 +22,10 @@ const Hero = () => {
       <div className="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_25%_25%,white,transparent_40%)]" />
       <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_75%_60%,#F97316,transparent_45%)]" />
 
-      {/* Stratul 3D Spline (daca scena e setata). Canvas transparent ->
-          gradientul de mai sus se vede in spate. */}
-      {SPLINE_SCENE && (
-        <div className="absolute inset-0 z-0">
-          <Spline scene={SPLINE_SCENE} />
-        </div>
-      )}
-
-      {/* Overlay gradient pentru lizibilitate text peste 3D */}
+      {/* Overlay gradient pentru lizibilitate text */}
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
 
-      {/* Continut */}
+      {/* Continut text (sub cutia 3D) */}
       <div className="absolute inset-0 z-20 flex flex-col justify-center items-center text-center px-6 gap-6 pointer-events-none">
         <span className="text-xs tracking-[0.4em] uppercase text-white/70 font-medium">
           MENV Divers
@@ -58,8 +50,17 @@ const Hero = () => {
         </div>
       </div>
 
+      {/* Stratul 3D Spline DEASUPRA textului, centrat. pointer-events-none ca
+          sa nu blocheze butonul de dedesubt. Canvas transparent -> textul si
+          gradientul se vad in spate. */}
+      {SPLINE_SCENE && (
+        <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+          <Spline scene={SPLINE_SCENE} />
+        </div>
+      )}
+
       {/* Indicator scroll */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
         <div className="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center p-1.5">
           <div className="w-1 h-2 rounded-full bg-white/70 animate-bounce" />
         </div>
