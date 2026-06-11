@@ -51,6 +51,9 @@ export const listProducts = async ({
 
   const next = {
     ...(await getCacheOptions("products")),
+    // Reimprospateaza lista de produse periodic, ca produsele noi adaugate din
+    // admin sa apara in storefront in ~1 minut, fara redeploy.
+    revalidate: 60,
   }
 
   return sdk.client
@@ -68,7 +71,6 @@ export const listProducts = async ({
         },
         headers,
         next,
-        cache: "force-cache",
       }
     )
     .then(({ products, count }) => {
