@@ -1,29 +1,16 @@
 import { Button } from "@modules/common/components/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Spline from "@splinetool/react-spline/next"
 import { getT } from "@lib/i18n/server"
-
-// Scena 3D se seteaza prin env var ca sa o poti schimba fara cod.
-// Numele folosit in Railway e NEXT_PUBLIC_SPLINE_SCEN (fara E final);
-// pastram si varianta cu E ca fallback.
-const RAW_SCENE = (
-  process.env.NEXT_PUBLIC_SPLINE_SCEN ||
-  process.env.NEXT_PUBLIC_SPLINE_SCENE ||
-  ""
-).trim()
-
-// Spline accepta DOAR fisiere .splinecode exportate din panoul Export.
-// Daca s-a pus alt link (editor/preview), il ignoram ca sa nu crape pagina.
-const SPLINE_SCENE = RAW_SCENE.endsWith(".splinecode") ? RAW_SCENE : undefined
+import Model3D from "./model-3d"
 
 const Hero = async () => {
   const t = await getT()
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-page">
-      {/* Glow difuz in spatele cutiei -> o pune in valoare (stil Apple/Linear), nuanta verde brand */}
+      {/* Glow difuz in spatele modelului -> il pune in valoare, nuanta verde brand */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[65vw] h-[65vw] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.16),rgba(255,255,255,0.04)_32%,transparent_65%)] z-10" />
 
-      {/* Vigneta + grain -> drama cinematica DOAR pe dark (pe light ar murdari albul) */}
+      {/* Vigneta -> drama cinematica DOAR pe dark (pe light ar murdari albul) */}
       <div className="hidden dark:block absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.55))]" />
 
       {/* Film grain fin -> textura premium, fara asset extern */}
@@ -35,18 +22,16 @@ const Hero = async () => {
         }}
       />
 
-      {/* Stratul 3D Spline — vedeta din mijloc */}
-      {SPLINE_SCENE && (
-        <div className="absolute inset-0 z-20 pointer-events-none">
-          <Spline scene={SPLINE_SCENE} />
-        </div>
-      )}
+      {/* Stratul 3D (React Three Fiber) — vedeta din mijloc */}
+      <div className="absolute inset-0 z-20">
+        <Model3D />
+      </div>
 
-      {/* Scrim jos DOAR pe mobil -> pe ecran ingust cutia coboara peste text;
-          gradientul topeste baza cutiei in negru si tine textul mereu lizibil. */}
+      {/* Scrim jos DOAR pe mobil -> pe ecran ingust modelul coboara peste text;
+          gradientul topeste baza in fundal si tine textul mereu lizibil. */}
       <div className="absolute inset-x-0 bottom-0 h-[46%] z-[25] small:hidden bg-gradient-to-t from-page via-page/85 to-transparent pointer-events-none" />
 
-      {/* Continut: titlu sus, CTA jos -> cutia pluteste in golul din mijloc */}
+      {/* Continut: titlu sus, CTA jos -> modelul pluteste in golul din mijloc */}
       <div className="relative z-30 min-h-screen flex flex-col justify-between items-center text-center px-6 pt-20 pb-10 small:pt-24 small:pb-14 pointer-events-none">
 
         {/* SUS — eyebrow + titlu */}
@@ -64,7 +49,7 @@ const Hero = async () => {
           </h1>
         </div>
 
-        {/* JOS — subtitlu + CTA (impins spre baza, sub cutie) */}
+        {/* JOS — subtitlu + CTA (impins spre baza, sub model) */}
         <div className="flex flex-col items-center gap-6 max-w-xl">
           <p className="font-display text-content/90 text-lg small:text-xl font-medium tracking-tight leading-snug dark:[text-shadow:_0_2px_20px_rgb(0_0_0_/_60%)]">
             {t("hero.subtitle")}

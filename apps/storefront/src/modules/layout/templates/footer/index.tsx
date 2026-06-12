@@ -163,9 +163,29 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex w-full py-8 border-t border-line justify-between text-subtle">
+        <div className="flex flex-col gap-2 small:flex-row w-full py-8 border-t border-line justify-between text-subtle">
           <p className="text-xs">
             © {new Date().getFullYear()} MENV Divers. {t("footer.rights")}
+          </p>
+          <p className="text-[10px] text-subtle/70">
+            Model 3D{" "}
+            <a
+              href="https://sketchfab.com/3d-models/mini-market-af730bd7786a4a288b2b2ce99f73e2e2"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="hover:text-content underline"
+            >
+              &quot;mini-market&quot;
+            </a>{" "}
+            de volodymyr.hrynchyk &mdash;{" "}
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="hover:text-content underline"
+            >
+              CC BY 4.0
+            </a>
           </p>
         </div>
       </div>
