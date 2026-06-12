@@ -15,12 +15,6 @@ const RAW_SCENE = (
 // Daca s-a pus alt link (editor/preview), il ignoram ca sa nu crape pagina.
 const SPLINE_SCENE = RAW_SCENE.endsWith(".splinecode") ? RAW_SCENE : undefined
 
-const BENEFITS = [
-  { label: "Livrare rapidă", icon: "M5 12h14M13 6l6 6-6 6" },
-  { label: "Plată ramburs", icon: "M3 10h18M3 6h18v12H3z" },
-  { label: "Retur 14 zile", icon: "M3 12a9 9 0 1 0 3-6.7L3 8" },
-]
-
 const Hero = () => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#0A0A0E]">
@@ -47,7 +41,7 @@ const Hero = () => {
       )}
 
       {/* Continut: titlu sus, CTA jos -> cutia pluteste in golul din mijloc */}
-      <div className="relative z-30 min-h-screen flex flex-col justify-between items-center text-center px-6 py-20 small:py-24 pointer-events-none">
+      <div className="relative z-30 min-h-screen flex flex-col justify-between items-center text-center px-6 pt-20 pb-10 small:pt-24 small:pb-14 pointer-events-none">
 
         {/* SUS — eyebrow + titlu */}
         <div className="flex flex-col items-center gap-4 max-w-4xl">
@@ -64,9 +58,9 @@ const Hero = () => {
           </h1>
         </div>
 
-        {/* JOS — subtitlu, CTA, beneficii */}
-        <div className="flex flex-col items-center gap-7 max-w-xl">
-          <p className="font-display text-white text-xl small:text-2xl font-semibold tracking-tight leading-snug [text-shadow:_0_2px_20px_rgb(0_0_0_/_60%)]">
+        {/* JOS — subtitlu + CTA (impins spre baza, sub cutie) */}
+        <div className="flex flex-col items-center gap-6 max-w-xl">
+          <p className="font-display text-white/90 text-lg small:text-xl font-medium tracking-tight leading-snug [text-shadow:_0_2px_20px_rgb(0_0_0_/_60%)]">
             Mii de produse din toate categoriile,
             <br className="hidden small:block" />{" "}
             livrate rapid oriunde în țară.
@@ -76,7 +70,7 @@ const Hero = () => {
             <LocalizedClientLink href="/store">
               <Button
                 variant="secondary"
-                className="!bg-white !text-brand-primary hover:!bg-brand-light !border-0 shadow-2xl !px-8 !py-3.5 transition-transform hover:scale-105 active:scale-95"
+                className="!bg-white !text-brand-primary hover:!bg-brand-light !border-0 shadow-2xl !px-8 !py-3.5 !rounded-full font-semibold transition-transform hover:scale-105 active:scale-95"
               >
                 Vezi produsele
               </Button>
@@ -84,23 +78,11 @@ const Hero = () => {
             <LocalizedClientLink href="/store?view=all">
               <Button
                 variant="secondary"
-                className="!bg-white/10 !text-white hover:!bg-white/20 !border !border-white/30 backdrop-blur-sm shadow-lg !px-8 !py-3.5 transition-transform hover:scale-105 active:scale-95"
+                className="!bg-white/10 !text-white hover:!bg-white/20 !border !border-white/30 backdrop-blur-sm shadow-lg !px-8 !py-3.5 !rounded-full font-semibold transition-transform hover:scale-105 active:scale-95"
               >
                 Toate produsele
               </Button>
             </LocalizedClientLink>
-          </div>
-
-          {/* Beneficii */}
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-white/70 text-sm">
-            {BENEFITS.map((b) => (
-              <span key={b.label} className="inline-flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d={b.icon} />
-                </svg>
-                {b.label}
-              </span>
-            ))}
           </div>
         </div>
       </div>

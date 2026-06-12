@@ -22,7 +22,7 @@ export default async function Nav() {
             </div>
             <LocalizedClientLink
               href="/"
-              className="flex items-center transition-transform duration-200 hover:scale-105"
+              className="flex items-center gap-2.5 transition-transform duration-200 hover:scale-[1.03]"
               data-testid="nav-store-link"
             >
               <Image
@@ -33,6 +33,10 @@ export default async function Nav() {
                 priority
                 className="h-14 w-auto object-contain"
               />
+              <span className="font-display text-lg small:text-xl font-bold tracking-tight text-white leading-none whitespace-nowrap">
+                MENV{" "}
+                <span className="font-medium text-white/55">Divers</span>
+              </span>
             </LocalizedClientLink>
             <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-white/70">
               <NavLink href="/store">Magazin</NavLink>
