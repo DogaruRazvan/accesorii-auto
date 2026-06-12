@@ -66,14 +66,22 @@ module.exports = {
         "3xl": "2rem",
       },
       fontFamily: {
+        // Inter încărcat prin next/font (vezi app/layout.tsx) — font de bază pentru tot UI-ul
         sans: [
-          "Inter",
+          "var(--font-inter)",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
           "Helvetica Neue",
           "Ubuntu",
+          "sans-serif",
+        ],
+        // Plus Jakarta Sans — pentru titluri și accente, look modern premium
+        display: [
+          "var(--font-display)",
+          "var(--font-inter)",
+          "-apple-system",
           "sans-serif",
         ],
       },

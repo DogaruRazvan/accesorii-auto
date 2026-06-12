@@ -8,7 +8,6 @@ import {
 } from "@headlessui/react"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
-import { Button } from "@modules/common/components/ui"
 import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
@@ -16,6 +15,9 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
+
+// Pragul de la care livrarea e gratuită (în lei). Schimbă-l aici dacă oferta diferă.
+const FREE_SHIPPING_THRESHOLD = 200
 
 const CartDropdown = ({
   cart: cartState,
@@ -37,6 +39,12 @@ const CartDropdown = ({
 
   const subtotal = cartState?.subtotal ?? 0
   const itemRef = useRef<number>(totalItems || 0)
+
+  const remainingForFree = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0)
+  const freeShippingPct = Math.min(
+    (subtotal / FREE_SHIPPING_THRESHOLD) * 100,
+    100
+  )
 
   const timedOpen = () => {
     open()
@@ -111,15 +119,54 @@ const CartDropdown = ({
         >
           <PopoverPanel
             static
-            className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-white border-x border-b border-gray-200 w-[420px] text-ui-fg-base"
+            className="hidden small:block absolute top-[calc(100%+14px)] right-0 bg-white rounded-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.35)] border border-gray-100 w-[400px] text-gray-900 overflow-hidden"
             data-testid="nav-cart-dropdown"
           >
-            <div className="p-4 flex items-center justify-center">
-              <h3 className="text-large-semi">Cart</h3>
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <h3 className="text-base font-semibold tracking-tight">
+                Coșul tău
+              </h3>
+              {totalItems > 0 && (
+                <span className="text-xs font-medium text-gray-400">
+                  {totalItems} {totalItems === 1 ? "produs" : "produse"}
+                </span>
+              )}
             </div>
+
+            {/* Bară progres livrare gratuită */}
+            {cartState && cartState.items?.length ? (
+              <div className="px-5 pt-4">
+                {remainingForFree > 0 ? (
+                  <p className="text-xs text-gray-500 mb-2">
+                    Mai adaugă{" "}
+                    <span className="font-semibold text-gray-900">
+                      {convertToLocale({
+                        amount: remainingForFree,
+                        currency_code: cartState.currency_code,
+                      })}
+                    </span>{" "}
+                    pentru livrare gratuită
+                  </p>
+                ) : (
+                  <p className="text-xs font-medium text-emerald-600 mb-2 flex items-center gap-1.5">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Felicitări! Ai livrare gratuită
+                  </p>
+                )}
+                <div className="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-brand-accent transition-all duration-500"
+                    style={{ width: `${freeShippingPct}%` }}
+                  />
+                </div>
+              </div>
+            ) : null}
+
             {cartState && cartState.items?.length ? (
               <>
-                <div className="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
+                <div className="overflow-y-auto max-h-[360px] px-5 py-4 grid grid-cols-1 gap-y-5 no-scrollbar">
                   {cartState.items
                     .sort((a, b) => {
                       return (a.created_at ?? "") > (b.created_at ?? "")
@@ -128,13 +175,13 @@ const CartDropdown = ({
                     })
                     .map((item) => (
                       <div
-                        className="grid grid-cols-[122px_1fr] gap-x-4"
+                        className="grid grid-cols-[80px_1fr] gap-x-3.5"
                         key={item.id}
                         data-testid="cart-item"
                       >
                         <LocalizedClientLink
                           href={`/products/${item.product_handle}`}
-                          className="w-24"
+                          className="w-20 shrink-0"
                         >
                           <Thumbnail
                             thumbnail={item.thumbnail}
@@ -142,58 +189,59 @@ const CartDropdown = ({
                             size="square"
                           />
                         </LocalizedClientLink>
-                        <div className="flex flex-col justify-between flex-1">
-                          <div className="flex flex-col flex-1">
-                            <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
-                                  <LocalizedClientLink
-                                    href={`/products/${item.product_handle}`}
-                                    data-testid="product-link"
-                                  >
-                                    {item.title}
-                                  </LocalizedClientLink>
-                                </h3>
+                        <div className="flex flex-col justify-between flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex flex-col min-w-0">
+                              <h3 className="text-sm font-medium text-gray-900 truncate">
+                                <LocalizedClientLink
+                                  href={`/products/${item.product_handle}`}
+                                  data-testid="product-link"
+                                >
+                                  {item.title}
+                                </LocalizedClientLink>
+                              </h3>
+                              <div className="text-xs text-gray-400">
                                 <LineItemOptions
                                   variant={item.variant}
                                   data-testid="cart-item-variant"
                                   data-value={item.variant}
                                 />
-                                <span
-                                  data-testid="cart-item-quantity"
-                                  data-value={item.quantity}
-                                >
-                                  Quantity: {item.quantity}
-                                </span>
                               </div>
-                              <div className="flex justify-end">
-                                <LineItemPrice
-                                  item={item}
-                                  style="tight"
-                                  currencyCode={cartState.currency_code}
-                                />
-                              </div>
+                              <span
+                                className="text-xs text-gray-400 mt-0.5"
+                                data-testid="cart-item-quantity"
+                                data-value={item.quantity}
+                              >
+                                Cantitate: {item.quantity}
+                              </span>
+                            </div>
+                            <div className="text-sm font-semibold text-gray-900 shrink-0">
+                              <LineItemPrice
+                                item={item}
+                                style="tight"
+                                currencyCode={cartState.currency_code}
+                              />
                             </div>
                           </div>
                           <DeleteButton
                             id={item.id}
-                            className="mt-1"
+                            className="mt-1 text-xs text-gray-400 hover:text-red-500"
                             data-testid="cart-item-remove-button"
                           >
-                            Remove
+                            Elimină
                           </DeleteButton>
                         </div>
                       </div>
                     ))}
                 </div>
-                <div className="p-4 flex flex-col gap-y-4 text-small-regular">
+                <div className="px-5 py-4 border-t border-gray-100 flex flex-col gap-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-ui-fg-base font-semibold">
+                    <span className="text-sm text-gray-500">
                       Subtotal{" "}
-                      <span className="font-normal">(excl. taxes)</span>
+                      <span className="text-xs">(fără TVA)</span>
                     </span>
                     <span
-                      className="text-large-semi"
+                      className="text-lg font-bold tracking-tight text-gray-950"
                       data-testid="cart-subtotal"
                       data-value={subtotal}
                     >
@@ -203,33 +251,33 @@ const CartDropdown = ({
                       })}
                     </span>
                   </div>
-                  <LocalizedClientLink href="/cart" passHref>
-                    <Button
-                      className="w-full"
-                      size="large"
-                      data-testid="go-to-cart-button"
-                    >
-                      Go to cart
-                    </Button>
+                  <LocalizedClientLink
+                    href="/cart"
+                    onClick={close}
+                    className="w-full inline-flex items-center justify-center h-12 rounded-full bg-brand-accent text-white text-sm font-semibold transition-all hover:brightness-110 active:scale-[0.98]"
+                    data-testid="go-to-cart-button"
+                  >
+                    Vezi coșul
                   </LocalizedClientLink>
                 </div>
               </>
             ) : (
-              <div>
-                <div className="flex py-16 flex-col gap-y-4 items-center justify-center">
-                  <div className="bg-gray-900 text-small-regular flex items-center justify-center w-6 h-6 rounded-full text-white">
-                    <span>0</span>
-                  </div>
-                  <span>Your shopping bag is empty.</span>
-                  <div>
-                    <LocalizedClientLink href="/store">
-                      <>
-                        <span className="sr-only">Go to all products page</span>
-                        <Button onClick={close}>Explore products</Button>
-                      </>
-                    </LocalizedClientLink>
-                  </div>
+              <div className="flex py-14 flex-col gap-y-4 items-center justify-center px-6 text-center">
+                <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                  </svg>
                 </div>
+                <span className="text-sm text-gray-500">Coșul tău e gol.</span>
+                <LocalizedClientLink
+                  href="/store"
+                  onClick={close}
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-gray-950 text-white text-sm font-semibold transition-all hover:bg-gray-800 active:scale-95"
+                >
+                  Descoperă produsele
+                </LocalizedClientLink>
               </div>
             )}
           </PopoverPanel>
