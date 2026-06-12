@@ -40,6 +40,10 @@ const Hero = () => {
         </div>
       )}
 
+      {/* Scrim jos DOAR pe mobil -> pe ecran ingust cutia coboara peste text;
+          gradientul topeste baza cutiei in negru si tine textul mereu lizibil. */}
+      <div className="absolute inset-x-0 bottom-0 h-[46%] z-[25] small:hidden bg-gradient-to-t from-[#0A0A0E] via-[#0A0A0E]/85 to-transparent pointer-events-none" />
+
       {/* Continut: titlu sus, CTA jos -> cutia pluteste in golul din mijloc */}
       <div className="relative z-30 min-h-screen flex flex-col justify-between items-center text-center px-6 pt-20 pb-10 small:pt-24 small:pb-14 pointer-events-none">
 
