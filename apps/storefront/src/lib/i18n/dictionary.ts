@@ -128,6 +128,13 @@ const ro: Messages = {
   "landing.explore": "Explorează",
   "landing.inStore": "În magazin acum",
   "landing.emptyCategories": "Adaugă categorii din panoul de admin.",
+
+  // Cod promoțional
+  "discount.addCode": "Ai un cod promoțional?",
+  "discount.codePlaceholder": "Cod",
+  "discount.apply": "Aplică",
+  "discount.applied": "Coduri aplicate:",
+  "discount.remove": "Elimină codul",
 }
 
 const en: Messages = {
@@ -250,6 +257,13 @@ const en: Messages = {
   "landing.explore": "Explore",
   "landing.inStore": "In store now",
   "landing.emptyCategories": "Add categories from the admin panel.",
+
+  // Discount code
+  "discount.addCode": "Have a promo code?",
+  "discount.codePlaceholder": "Code",
+  "discount.apply": "Apply",
+  "discount.applied": "Applied promotions:",
+  "discount.remove": "Remove code",
 }
 
 export const dict: Record<Locale, Messages> = { ro, en }

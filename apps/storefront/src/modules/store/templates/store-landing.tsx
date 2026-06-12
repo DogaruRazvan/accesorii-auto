@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { listCategories } from "@lib/data/categories"
 import { listProducts } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
@@ -6,25 +7,24 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import ProductPreview from "@modules/products/components/product-preview"
 import { getT } from "@lib/i18n/server"
 
-// Paleta editorială — alternează cald/rece, deschis/închis
-const TILES: { bg: string; text: string; numColor: string }[] = [
-  { bg: "#0A0A0E", text: "#FFFFFF", numColor: "#FFFFFF" },       // 0 — negru
-  { bg: "#F5EFE6", text: "#1A0F00", numColor: "#1A0F00" },       // 1 — cremă
-  { bg: "#E8F0FB", text: "#0D1F3C", numColor: "#0D1F3C" },       // 2 — albastru pal
-  { bg: "#EAEAE6", text: "#1A1A12", numColor: "#1A1A12" },       // 3 — sage neutru
-  { bg: "#111827", text: "#FFFFFF", numColor: "#FFFFFF" },        // 4 — navy
-  { bg: "#FBF0EE", text: "#2C1208", numColor: "#2C1208" },       // 5 — roz cald
-  { bg: "#F0EDF9", text: "#1A0F2E", numColor: "#1A0F2E" },       // 6 — lavandă
-  { bg: "#1C1C2A", text: "#FFFFFF", numColor: "#FFFFFF" },        // 7 — bleumarin
+// Paleta editorială — alternează cald/rece, deschis/închis (fallback fără imagine)
+const TILES: { bg: string; text: string }[] = [
+  { bg: "#0A0A0E", text: "#FFFFFF" },
+  { bg: "#F5EFE6", text: "#1A0F00" },
+  { bg: "#E8F0FB", text: "#0D1F3C" },
+  { bg: "#EAEAE6", text: "#1A1A12" },
+  { bg: "#111827", text: "#FFFFFF" },
+  { bg: "#FBF0EE", text: "#2C1208" },
+  { bg: "#F0EDF9", text: "#1A0F2E" },
+  { bg: "#1C1C2A", text: "#FFFFFF" },
 ]
 
 function isWide(i: number) {
   return i === 0 || i % 7 === 5
 }
 
-function isDark(idx: number) {
-  const t = TILES[idx % TILES.length]
-  return t.text === "#FFFFFF"
+function isDark(textColor: string) {
+  return textColor === "#FFFFFF"
 }
 
 export default async function StoreLanding({ countryCode }: { countryCode: string }) {
@@ -53,17 +53,20 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
             {topCategories.map((cat, i) => {
               const tile = TILES[i % TILES.length]
               const wide = isWide(i)
-              const dark = isDark(i)
               const isFirst = i === 0
+              const imageUrl = (cat.metadata as Record<string, unknown> | null)?.image as string | undefined
+              const hasImage = !!imageUrl
+              const dark = hasImage ? true : isDark(tile.text)
 
               return (
                 <LocalizedClientLink
                   key={cat.id}
                   href={`/categories/${cat.handle}`}
-                  style={{ backgroundColor: tile.bg, color: tile.text }}
+                  style={hasImage ? {} : { backgroundColor: tile.bg, color: tile.text }}
                   className={[
                     "group relative overflow-hidden rounded-2xl small:rounded-3xl select-none cursor-pointer",
                     "transition-transform duration-500 hover:scale-[0.985] active:scale-[0.975]",
+                    hasImage ? "bg-neutral-900 text-white" : "",
                     wide ? "col-span-2 medium:col-span-2" : "",
                     isFirst
                       ? "h-[260px] small:h-[380px]"
@@ -74,34 +77,54 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
                     .filter(Boolean)
                     .join(" ")}
                 >
-                  {/* Hover overlay */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{
-                      background: dark
-                        ? "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%)"
-                        : "linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 60%)",
-                    }}
-                  />
+                  {/* Imagine de fundal */}
+                  {hasImage && (
+                    <>
+                      <Image
+                        src={imageUrl}
+                        alt={cat.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes={wide ? "(max-width:768px) 100vw, 66vw" : "(max-width:768px) 50vw, 33vw"}
+                      />
+                      {/* Gradient pentru lizibilitate text */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10 transition-opacity duration-500 group-hover:from-black/80" />
+                    </>
+                  )}
 
-                  {/* Număr decorativ watermark */}
-                  <span
-                    className="absolute -bottom-3 -right-2 font-black leading-none pointer-events-none select-none"
-                    style={{
-                      fontSize: isFirst ? "clamp(100px,18vw,200px)" : "clamp(64px,12vw,130px)",
-                      opacity: 0.04,
-                      color: tile.text,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                  {/* Hover overlay (doar fără imagine) */}
+                  {!hasImage && (
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: dark
+                          ? "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%)"
+                          : "linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 60%)",
+                      }}
+                    />
+                  )}
+
+                  {/* Număr decorativ watermark (doar fără imagine) */}
+                  {!hasImage && (
+                    <span
+                      className="absolute -bottom-3 -right-2 font-black leading-none pointer-events-none select-none"
+                      style={{
+                        fontSize: isFirst ? "clamp(100px,18vw,200px)" : "clamp(64px,12vw,130px)",
+                        opacity: 0.04,
+                        color: tile.text,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  )}
 
                   {/* Content */}
                   <div className="absolute inset-0 p-5 small:p-7 flex flex-col justify-end gap-1">
                     <h2
                       className={[
                         "font-bold tracking-tight leading-tight transition-transform duration-300 group-hover:translate-x-1",
+                        hasImage ? "text-white" : "",
                         isFirst
                           ? "text-3xl small:text-[2.75rem]"
                           : "text-xl small:text-2xl",
@@ -111,7 +134,13 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
                     </h2>
 
                     {/* "Explorează →" apare la hover */}
-                    <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase transition-all duration-300 opacity-0 group-hover:opacity-60 translate-y-1 group-hover:translate-y-0">
+                    <div
+                      className={[
+                        "flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase",
+                        "transition-all duration-300 opacity-0 group-hover:opacity-60 translate-y-1 group-hover:translate-y-0",
+                        hasImage ? "text-white" : "",
+                      ].join(" ")}
+                    >
                       <span>{t("landing.explore")}</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="9 18 15 12 9 6" />
@@ -141,7 +170,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
                 href="/store?view=all"
                 className="text-[11px] font-bold tracking-[0.18em] uppercase text-subtle hover:text-content transition-colors"
               >
-                {t("common.seeAll")} →
+                {t("common.seeAll")} &rarr;
               </LocalizedClientLink>
             </div>
 
