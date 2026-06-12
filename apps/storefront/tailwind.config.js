@@ -33,13 +33,13 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
-        // Paleta brand MENV Divers — schimbă valorile când ai paleta oficială
+        // Paleta brand MENV Divers — verde emerald (aliniat cu CTA-ul)
         brand: {
-          primary: "#1E3A5F",   // navy închis — culoarea principală
-          secondary: "#2563EB", // albastru — butoane, linkuri active
-          accent: "#F97316",    // portocaliu — CTA, highlight-uri
-          light: "#EFF6FF",     // fundal albăstrui-deschis
-          dark: "#0F172A",      // text dark / fundal header
+          primary: "#059669",   // emerald 600 — culoarea principală
+          secondary: "#10B981", // emerald 500 — butoane, linkuri active
+          accent: "#34D399",    // emerald 400 — highlight-uri
+          light: "#ECFDF5",     // fundal verzui-deschis
+          dark: "#064E3B",      // verde închis — accente pe fundal deschis
         },
         // Tokeni semantici pentru light/dark mode. Valorile vin din variabile CSS
         // (vezi globals.css) si se schimba automat cand <html> are clasa .dark.

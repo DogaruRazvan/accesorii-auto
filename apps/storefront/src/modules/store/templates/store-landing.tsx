@@ -65,7 +65,8 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
                   style={hasImage ? {} : { backgroundColor: tile.bg, color: tile.text }}
                   className={[
                     "group relative overflow-hidden rounded-2xl small:rounded-3xl select-none cursor-pointer",
-                    "transition-transform duration-500 hover:scale-[0.985] active:scale-[0.975]",
+                    "transition-all duration-500 hover:scale-[0.985] active:scale-[0.975]",
+                    "ring-2 ring-transparent hover:ring-cta ring-offset-2 ring-offset-page hover:ring-offset-page",
                     hasImage ? "bg-neutral-900 text-white" : "",
                     wide ? "col-span-2 medium:col-span-2" : "",
                     isFirst
@@ -163,12 +164,13 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
         <section className="mt-14 small:mt-20 border-t border-line">
           <div className="content-container py-12 small:py-16">
             <div className="flex items-center justify-between mb-8 small:mb-10">
-              <p className="text-[11px] font-bold tracking-[0.22em] uppercase text-subtle">
+              <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.22em] uppercase text-subtle">
+                <span className="w-1.5 h-1.5 rounded-full bg-cta animate-pulse" />
                 {t("landing.inStore")}
               </p>
               <LocalizedClientLink
                 href="/store?view=all"
-                className="text-[11px] font-bold tracking-[0.18em] uppercase text-subtle hover:text-content transition-colors"
+                className="text-[11px] font-bold tracking-[0.18em] uppercase text-cta hover:text-cta-hover transition-colors"
               >
                 {t("common.seeAll")} &rarr;
               </LocalizedClientLink>
@@ -193,7 +195,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
           </p>
           <LocalizedClientLink
             href="/store?view=all"
-            className="shrink-0 inline-flex px-7 py-3.5 rounded-full bg-white text-gray-950 text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+            className="shrink-0 inline-flex px-7 py-3.5 rounded-full bg-cta hover:bg-cta-hover text-white text-sm font-semibold shadow-xl shadow-cta/20 transition-all hover:scale-105 active:scale-95"
           >
             {t("common.allProducts")}
           </LocalizedClientLink>

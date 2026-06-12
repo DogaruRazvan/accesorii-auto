@@ -21,7 +21,7 @@ const Review = ({ cart }: { cart: HttpTypes.StoreCart }) => {
     (cart.payment_collection || paidByGiftcard)
 
   return (
-    <div className="bg-white">
+    <div>
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -39,7 +39,7 @@ const Review = ({ cart }: { cart: HttpTypes.StoreCart }) => {
         <>
           <div className="flex items-start gap-x-1 w-full mb-6">
             <div className="w-full">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+              <Text className="txt-medium-plus text-content mb-1">
                 Prin plasarea comenzii, confirmi că ai citit și accepți
                 Termenii și condițiile, Politica de vânzare, Politica de retur
                 și Politica de confidențialitate MENV Divers.

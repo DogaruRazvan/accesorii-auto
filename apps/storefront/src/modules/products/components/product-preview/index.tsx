@@ -23,12 +23,21 @@ export default async function ProductPreview({
       className="group block"
     >
       <div data-testid="product-wrapper" className="flex flex-col">
-        <Thumbnail
-          thumbnail={product.thumbnail}
-          images={product.images}
-          size="full"
-          isFeatured={isFeatured}
-        />
+        <div className="relative">
+          <Thumbnail
+            thumbnail={product.thumbnail}
+            images={product.images}
+            size="full"
+            isFeatured={isFeatured}
+          />
+          {/* Buton CTA verde -> apare la hover, indiciu de actiune */}
+          <div className="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-cta text-white shadow-lg shadow-cta/30 opacity-0 translate-y-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </div>
+        </div>
         <div className="mt-3.5 flex items-start justify-between gap-3">
           <h3
             className="text-sm text-content/70 font-medium leading-snug line-clamp-2 transition-colors group-hover:text-content"
@@ -37,7 +46,7 @@ export default async function ProductPreview({
             {product.title}
           </h3>
           {cheapestPrice && (
-            <div className="shrink-0 text-sm font-semibold text-content">
+            <div className="shrink-0 text-sm font-bold text-cta">
               <PreviewPrice price={cheapestPrice} />
             </div>
           )}

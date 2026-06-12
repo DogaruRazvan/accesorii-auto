@@ -20,8 +20,8 @@ const Hero = async () => {
   const t = await getT()
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-page">
-      {/* Glow difuz in spatele cutiei -> o pune in valoare (stil Apple/Linear) */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[65vw] h-[65vw] rounded-full bg-[radial-gradient(circle,rgba(120,140,200,0.16),rgba(255,255,255,0.05)_30%,transparent_65%)] z-10" />
+      {/* Glow difuz in spatele cutiei -> o pune in valoare (stil Apple/Linear), nuanta verde brand */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[65vw] h-[65vw] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.16),rgba(255,255,255,0.04)_32%,transparent_65%)] z-10" />
 
       {/* Vigneta + grain -> drama cinematica DOAR pe dark (pe light ar murdari albul) */}
       <div className="hidden dark:block absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.55))]" />
@@ -58,7 +58,7 @@ const Hero = async () => {
           <h1 className="font-display text-4xl small:text-7xl font-extrabold text-content tracking-tight leading-[1.05] dark:[text-shadow:_0_4px_30px_rgb(0_0_0_/_45%)]">
             {t("hero.title1")}
             <br />
-            <span className="bg-gradient-to-r from-brand-accent to-amber-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-600 to-emerald-400 dark:from-emerald-400 dark:to-emerald-200 bg-clip-text text-transparent">
               {t("hero.title2")}
             </span>
           </h1>

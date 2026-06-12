@@ -1,6 +1,6 @@
 import { Radio as RadioGroupOption } from "@headlessui/react"
 import { Text, clx } from "@modules/common/components/ui"
-import React, { useContext, useMemo, type JSX } from "react"
+import React, { useContext, useEffect, useMemo, useState, type JSX } from "react"
 
 import Radio from "@modules/common/components/radio"
 
@@ -36,7 +36,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
       className={clx(
         "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
         {
-          "border-ui-border-interactive":
+          "border-cta":
             selectedPaymentOptionId === paymentProviderId,
         }
       )}
@@ -51,7 +51,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
             <PaymentTest className="hidden small:block" />
           )}
         </div>
-        <span className="justify-self-end text-ui-fg-base">
+        <span className="justify-self-end text-content">
           {paymentInfoMap[paymentProviderId]?.icon}
         </span>
       </div>
@@ -80,22 +80,34 @@ export const StripeCardContainer = ({
 }) => {
   const stripeReady = useContext(StripeContext)
 
+  // Stripe ruleaza intr-un iframe -> nu poate citi variabilele CSS ale temei.
+  // Detectam manual dark mode si dam culoarea textului din card potrivita.
+  const [isDark, setIsDark] = useState(false)
+  useEffect(() => {
+    const root = document.documentElement
+    const update = () => setIsDark(root.classList.contains("dark"))
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] })
+    return () => observer.disconnect()
+  }, [])
+
   const useOptions: StripeCardElementOptions = useMemo(() => {
     return {
       style: {
         base: {
           fontFamily: "Inter, sans-serif",
-          color: "#424270",
+          color: isDark ? "#FAFAF9" : "#1C1917",
           "::placeholder": {
-            color: "rgb(107 114 128)",
+            color: isDark ? "rgb(168 162 158)" : "rgb(120 113 108)",
           },
         },
       },
       classes: {
-        base: "pt-3 pb-1 block w-full h-11 px-4 mt-0 bg-ui-bg-field border rounded-md appearance-none focus:outline-none focus:ring-0 focus:shadow-borders-interactive-with-active border-ui-border-base hover:bg-ui-bg-field-hover transition-all duration-300 ease-in-out",
+        base: "pt-3 pb-1 block w-full h-11 px-4 mt-0 bg-card border rounded-md appearance-none focus:outline-none focus:ring-0 focus:shadow-borders-interactive-with-active border-line hover:bg-muted transition-all duration-300 ease-in-out",
       },
     }
-  }, [])
+  }, [isDark])
 
   return (
     <PaymentContainer
@@ -107,7 +119,7 @@ export const StripeCardContainer = ({
       {selectedPaymentOptionId === paymentProviderId &&
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
-            <Text className="txt-medium-plus text-ui-fg-base mb-1">
+            <Text className="txt-medium-plus text-content mb-1">
               Enter your card details:
             </Text>
             <CardElement
