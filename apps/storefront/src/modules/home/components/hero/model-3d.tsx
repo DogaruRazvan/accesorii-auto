@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useRef } from "react"
+import { Suspense, useEffect, useRef } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import {
   useGLTF,
@@ -16,14 +16,35 @@ import * as THREE from "three"
 const MODEL_PATH =
   process.env.NEXT_PUBLIC_HERO_MODEL || "/models/mini-market.glb"
 
+// Rotatia de baza (cu fata la camera). Daca modelul apare cu spatele, schimba
+// in Math.PI. Valori intermediare il intorc usor lateral.
+const BASE_ROTATION_Y = 0
+
+// Cat se roteste la scroll (radiani pe tot primul ecran de scroll). ~0.6 = ~34°
+const SCROLL_ROTATION = 0.6
+
 function Model() {
   const group = useRef<THREE.Group>(null)
   const { scene } = useGLTF(MODEL_PATH)
+  const scrollProgress = useRef(0)
 
-  // Rotire lenta automata -> efectul "produs care se prezinta"
-  useFrame((_, delta) => {
+  useEffect(() => {
+    const onScroll = () => {
+      // 0 sus de tot -> 1 dupa un ecran de scroll
+      const p = Math.min(window.scrollY / window.innerHeight, 1)
+      scrollProgress.current = p
+    }
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  // Nu se mai roteste singur. Tinta = baza + putin din scroll. Lerp = lin.
+  useFrame(() => {
     if (group.current) {
-      group.current.rotation.y += delta * 0.25
+      const target = BASE_ROTATION_Y + scrollProgress.current * SCROLL_ROTATION
+      group.current.rotation.y +=
+        (target - group.current.rotation.y) * 0.08
     }
   })
 
@@ -48,10 +69,12 @@ export default function Model3D() {
       <directionalLight position={[-5, 3, -5]} intensity={0.4} color="#10B981" />
 
       <Suspense fallback={null}>
-        {/* Float -> plutire subtila sus-jos, look premium */}
-        <Float speed={1.4} rotationIntensity={0.15} floatIntensity={0.6}>
-          {/* Bounds -> incadreaza automat modelul indiferent de marimea lui */}
-          <Bounds fit clip observe margin={1.1}>
+        {/* Float -> doar plutire subtila sus-jos, FARA rotire (sta cu fata) */}
+        <Float speed={1.2} rotationIntensity={0} floatIntensity={0.5}>
+          {/* Bounds incadreaza o singura data la montare (FARA observe -> nu mai
+              reincadreaza la rotire/scroll, deci nu mai da zoom). margin mai mare
+              = camera mai departe = model mai mic (~20% fata de inainte). */}
+          <Bounds fit clip margin={1.375}>
             <Model />
           </Bounds>
         </Float>
