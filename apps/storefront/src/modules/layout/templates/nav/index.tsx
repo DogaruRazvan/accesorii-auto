@@ -5,17 +5,18 @@ import { StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileMenu from "@modules/layout/components/side-menu"
+import NavSearchBar from "@modules/layout/components/nav-search"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
 
   return (
     <div className="sticky top-0 inset-x-0 z-50">
-      <header className="relative h-20 mx-auto bg-[#0A0A0E]/90 backdrop-blur-xl border-b border-white/10">
-        <nav className="content-container flex items-center justify-between w-full h-full">
+      <header className="relative h-20 mx-auto bg-[#0A0A0E] border-b border-white/10">
+        <nav className="content-container flex items-center justify-between w-full h-full gap-x-4">
 
-          {/* Left: logo + desktop links */}
-          <div className="flex items-center gap-x-10">
+          {/* Left: hamburger (mobile) + logo + desktop links */}
+          <div className="flex items-center gap-x-6 shrink-0">
             <div className="small:hidden">
               <MobileMenu regions={regions} />
             </div>
@@ -38,8 +39,13 @@ export default async function Nav() {
             </div>
           </div>
 
+          {/* Center: search (only on store pages) */}
+          <Suspense fallback={null}>
+            <NavSearchBar />
+          </Suspense>
+
           {/* Right: account + cart */}
-          <div className="flex items-center gap-x-5">
+          <div className="flex items-center gap-x-5 shrink-0">
             <LocalizedClientLink
               href="/account"
               className="hidden small:flex items-center text-white/70 transition-all duration-200 hover:text-brand-accent hover:scale-110"
