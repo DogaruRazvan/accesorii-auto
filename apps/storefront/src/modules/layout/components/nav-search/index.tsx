@@ -5,10 +5,12 @@ import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { useTranslations } from "@lib/i18n/context"
 
 type Suggestion = Pick<HttpTypes.StoreProduct, "id" | "title" | "handle" | "thumbnail">
 
 export default function NavSearchBar() {
+  const t = useTranslations()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const params = useParams()
@@ -90,7 +92,7 @@ export default function NavSearchBar() {
             onKeyDown={onKeyDown}
             onFocus={() => { setFocused(true); suggestions.length && setOpen(true) }}
             onBlur={() => setFocused(false)}
-            placeholder="Caută produse..."
+            placeholder={t("nav.searchPlaceholder")}
             autoComplete="off"
             className="w-full py-2 pl-9 pr-4 bg-transparent text-[13px] text-content placeholder:text-content/40 outline-none"
           />
@@ -100,9 +102,9 @@ export default function NavSearchBar() {
       {open && value.trim().length >= 2 && (
         <div className="absolute z-[100] top-[calc(100%+10px)] left-0 right-0 rounded-2xl border border-line bg-card shadow-2xl overflow-hidden">
           {loading && !suggestions.length ? (
-            <p className="px-4 py-3 text-sm text-subtle">Se caută...</p>
+            <p className="px-4 py-3 text-sm text-subtle">{t("nav.searching")}</p>
           ) : !suggestions.length ? (
-            <p className="px-4 py-3 text-sm text-subtle">Niciun produs găsit.</p>
+            <p className="px-4 py-3 text-sm text-subtle">{t("nav.noResults")}</p>
           ) : (
             <ul className="max-h-72 overflow-y-auto py-2">
               {suggestions.map((s, i) => (
@@ -127,7 +129,7 @@ export default function NavSearchBar() {
                   onClick={() => goToResults(value.trim())}
                   className="w-full text-left px-4 py-2.5 text-sm font-medium text-cta hover:bg-muted transition-colors"
                 >
-                  Vezi toate pentru „{value.trim()}"
+                  {t("nav.searchAll")} „{value.trim()}"
                 </button>
               </li>
             </ul>

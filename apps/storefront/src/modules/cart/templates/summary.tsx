@@ -7,6 +7,7 @@ import Divider from "@modules/common/components/divider"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
+import { useTranslations } from "@lib/i18n/context"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart
@@ -23,15 +24,16 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
 }
 
 const Summary = ({ cart }: SummaryProps) => {
+  const t = useTranslations()
   const step = getCheckoutStep(cart)
 
   return (
-    <div className="flex flex-col gap-y-5 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
+    <div className="flex flex-col gap-y-5 rounded-3xl border border-line bg-card p-6 shadow-sm">
       <Heading
         level="h2"
-        className="text-xl font-bold tracking-tight text-gray-950"
+        className="text-xl font-bold tracking-tight text-content"
       >
-        Sumar comandă
+        {t("summary.title")}
       </Heading>
       <DiscountCode cart={cart} />
       <Divider />
@@ -40,8 +42,8 @@ const Summary = ({ cart }: SummaryProps) => {
         href={"/checkout?step=" + step}
         data-testid="checkout-button"
       >
-        <Button className="w-full !rounded-full !h-12 !bg-brand-primary hover:!bg-brand-secondary transition-colors">
-          Finalizează comanda
+        <Button className="w-full !rounded-full !h-12 !bg-cta hover:!bg-cta-hover !text-white !border-0 transition-colors">
+          {t("summary.checkout")}
         </Button>
       </LocalizedClientLink>
     </div>

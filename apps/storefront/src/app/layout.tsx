@@ -1,6 +1,8 @@
 import { getBaseURL } from "@lib/util/env"
 import { Metadata } from "next"
 import { Inter, Plus_Jakarta_Sans } from "next/font/google"
+import { LocaleProvider } from "@lib/i18n/context"
+import { getLocale } from "@lib/i18n/server"
 import "styles/globals.css"
 
 const inter = Inter({
@@ -28,14 +30,18 @@ export const metadata: Metadata = {
 // Fara alegere salvata -> urmeaza setarea device-ului (prefers-color-scheme).
 const themeInit = `(function(){try{var s=localStorage.getItem('theme');var d=(s==='dark'||s==='light')?s==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var e=document.documentElement;if(d){e.classList.add('dark');e.setAttribute('data-mode','dark');}else{e.classList.remove('dark');e.setAttribute('data-mode','light');}}catch(x){}})();`
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const locale = await getLocale()
+
   return (
-    <html lang="ro" className={`${inter.variable} ${jakartaSans.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${jakartaSans.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
       <body className="font-sans antialiased bg-page text-content">
-        <main className="relative">{props.children}</main>
+        <LocaleProvider locale={locale}>
+          <main className="relative">{props.children}</main>
+        </LocaleProvider>
       </body>
     </html>
   )

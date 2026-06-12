@@ -1,6 +1,7 @@
 import { Button } from "@modules/common/components/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Spline from "@splinetool/react-spline/next"
+import { getT } from "@lib/i18n/server"
 
 // Scena 3D se seteaza prin env var ca sa o poti schimba fara cod.
 // Numele folosit in Railway e NEXT_PUBLIC_SPLINE_SCEN (fara E final);
@@ -15,7 +16,8 @@ const RAW_SCENE = (
 // Daca s-a pus alt link (editor/preview), il ignoram ca sa nu crape pagina.
 const SPLINE_SCENE = RAW_SCENE.endsWith(".splinecode") ? RAW_SCENE : undefined
 
-const Hero = () => {
+const Hero = async () => {
+  const t = await getT()
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-page">
       {/* Glow difuz in spatele cutiei -> o pune in valoare (stil Apple/Linear) */}
@@ -54,10 +56,10 @@ const Hero = () => {
             MENV Divers
           </span>
           <h1 className="font-display text-4xl small:text-7xl font-extrabold text-content tracking-tight leading-[1.05] dark:[text-shadow:_0_4px_30px_rgb(0_0_0_/_45%)]">
-            Tot ce ai nevoie,
+            {t("hero.title1")}
             <br />
             <span className="bg-gradient-to-r from-brand-accent to-amber-300 bg-clip-text text-transparent">
-              într-un singur loc
+              {t("hero.title2")}
             </span>
           </h1>
         </div>
@@ -65,9 +67,7 @@ const Hero = () => {
         {/* JOS — subtitlu + CTA (impins spre baza, sub cutie) */}
         <div className="flex flex-col items-center gap-6 max-w-xl">
           <p className="font-display text-content/90 text-lg small:text-xl font-medium tracking-tight leading-snug dark:[text-shadow:_0_2px_20px_rgb(0_0_0_/_60%)]">
-            Mii de produse din toate categoriile,
-            <br className="hidden small:block" />{" "}
-            livrate rapid oriunde în țară.
+            {t("hero.subtitle")}
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pointer-events-auto">
@@ -76,7 +76,7 @@ const Hero = () => {
                 variant="secondary"
                 className="!bg-cta !text-white hover:!bg-cta-hover !border-0 shadow-2xl !px-8 !py-3.5 !rounded-full font-semibold transition-transform hover:scale-105 active:scale-95"
               >
-                Vezi produsele
+                {t("hero.ctaPrimary")}
               </Button>
             </LocalizedClientLink>
             <LocalizedClientLink href="/store?view=all">
@@ -84,7 +84,7 @@ const Hero = () => {
                 variant="secondary"
                 className="!bg-content/10 !text-content hover:!bg-content/20 !border !border-content/30 backdrop-blur-sm shadow-lg !px-8 !py-3.5 !rounded-full font-semibold transition-transform hover:scale-105 active:scale-95"
               >
-                Toate produsele
+                {t("hero.ctaSecondary")}
               </Button>
             </LocalizedClientLink>
           </div>

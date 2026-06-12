@@ -4,10 +4,11 @@ import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-g
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { getT } from "@lib/i18n/server"
 
 import PaginatedProducts from "./paginated-products"
 
-const StoreTemplate = ({
+const StoreTemplate = async ({
   sortBy,
   page,
   countryCode,
@@ -20,6 +21,7 @@ const StoreTemplate = ({
 }) => {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
+  const t = await getT()
 
   return (
     <div className="content-container py-8" data-testid="category-container">
@@ -32,14 +34,14 @@ const StoreTemplate = ({
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          Înapoi la magazin
+          {t("common.backToStore")}
         </LocalizedClientLink>
 
         <h1
           className="text-2xl small:text-3xl font-bold text-content tracking-tight"
           data-testid="store-page-title"
         >
-          {searchQuery ? `Rezultate pentru „${searchQuery}”` : "Toate produsele"}
+          {searchQuery ? `${t("common.resultsFor")} „${searchQuery}”` : t("common.allProducts")}
         </h1>
       </div>
 

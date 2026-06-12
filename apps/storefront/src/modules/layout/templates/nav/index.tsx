@@ -7,9 +7,12 @@ import CartButton from "@modules/layout/components/cart-button"
 import MobileMenu from "@modules/layout/components/side-menu"
 import NavSearchBar from "@modules/layout/components/nav-search"
 import ThemeToggle from "@modules/layout/components/theme-toggle"
+import LanguageToggle from "@modules/layout/components/language-toggle"
+import { getT } from "@lib/i18n/server"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
+  const t = await getT()
 
   return (
     <div className="sticky top-0 inset-x-0 z-50">
@@ -40,7 +43,7 @@ export default async function Nav() {
               </span>
             </LocalizedClientLink>
             <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-content/70">
-              <NavLink href="/store">Magazin</NavLink>
+              <NavLink href="/store">{t("nav.store")}</NavLink>
             </div>
           </div>
 
@@ -49,14 +52,15 @@ export default async function Nav() {
             <NavSearchBar />
           </Suspense>
 
-          {/* Right: theme toggle + account + cart */}
-          <div className="flex items-center gap-x-3 small:gap-x-4 shrink-0">
+          {/* Right: language + theme toggle + account + cart */}
+          <div className="flex items-center gap-x-2.5 small:gap-x-3 shrink-0">
+            <LanguageToggle />
             <ThemeToggle />
             <LocalizedClientLink
               href="/account"
               className="hidden small:flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
               data-testid="nav-account-link"
-              aria-label="Contul meu"
+              aria-label={t("nav.account")}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="4" />

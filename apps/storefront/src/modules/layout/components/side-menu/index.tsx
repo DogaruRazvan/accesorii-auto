@@ -4,12 +4,14 @@ import { HttpTypes } from "@medusajs/types"
 import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { useState } from "react"
+import { useTranslations } from "@lib/i18n/context"
 
 type SideMenuProps = {
   regions: HttpTypes.StoreRegion[] | null
 }
 
 const MobileMenu = ({ regions }: SideMenuProps) => {
+  const t = useTranslations()
   const [open, setOpen] = useState(false)
 
   return (
@@ -67,11 +69,11 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
         {/* Links — minimalist pe fundal inchis */}
         <nav className="flex flex-col px-7 mt-6">
           {[
-            { label: "Acasă", href: "/" },
-            { label: "Magazin", href: "/store" },
-            { label: "Categorii", href: "/store" },
-            { label: "Contul meu", href: "/account" },
-            { label: "Coș", href: "/cart" },
+            { label: t("menu.home"), href: "/" },
+            { label: t("menu.store"), href: "/store" },
+            { label: t("menu.categories"), href: "/store" },
+            { label: t("menu.account"), href: "/account" },
+            { label: t("menu.cart"), href: "/cart" },
           ].map(({ label, href }) => (
             <LocalizedClientLink
               key={href + label}

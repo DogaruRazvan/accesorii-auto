@@ -4,6 +4,7 @@ import { getRegion } from "@lib/data/regions"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
+import { getT } from "@lib/i18n/server"
 
 // Paleta editorială — alternează cald/rece, deschis/închis
 const TILES: { bg: string; text: string; numColor: string }[] = [
@@ -27,6 +28,7 @@ function isDark(idx: number) {
 }
 
 export default async function StoreLanding({ countryCode }: { countryCode: string }) {
+  const t = await getT()
   const region = await getRegion(countryCode)
 
   const categories = await listCategories().catch(() => [] as HttpTypes.StoreProductCategory[])
@@ -110,7 +112,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
 
                     {/* "Explorează →" apare la hover */}
                     <div className="flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase transition-all duration-300 opacity-0 group-hover:opacity-60 translate-y-1 group-hover:translate-y-0">
-                      <span>Explorează</span>
+                      <span>{t("landing.explore")}</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="9 18 15 12 9 6" />
                       </svg>
@@ -122,7 +124,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
           </div>
         ) : (
           <div className="rounded-3xl border-2 border-dashed border-line py-20 text-center text-sm text-subtle">
-            Adaugă categorii din panoul de admin.
+            {t("landing.emptyCategories")}
           </div>
         )}
       </section>
@@ -133,13 +135,13 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
           <div className="content-container py-12 small:py-16">
             <div className="flex items-center justify-between mb-8 small:mb-10">
               <p className="text-[11px] font-bold tracking-[0.22em] uppercase text-subtle">
-                În magazin acum
+                {t("landing.inStore")}
               </p>
               <LocalizedClientLink
                 href="/store?view=all"
                 className="text-[11px] font-bold tracking-[0.18em] uppercase text-subtle hover:text-content transition-colors"
               >
-                Vezi tot →
+                {t("common.seeAll")} →
               </LocalizedClientLink>
             </div>
 
@@ -158,13 +160,13 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
       <section className="bg-[#0A0A0E] mt-16 small:mt-24">
         <div className="content-container py-14 small:py-20 flex flex-col small:flex-row items-center justify-between gap-6">
           <p className="text-2xl small:text-3xl font-bold text-white tracking-tight text-center small:text-left">
-            Tot ce ai nevoie,<br className="small:hidden" /> într-un singur loc.
+            {t("footer.tagline")}
           </p>
           <LocalizedClientLink
             href="/store?view=all"
             className="shrink-0 inline-flex px-7 py-3.5 rounded-full bg-white text-gray-950 text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
           >
-            Toate produsele
+            {t("common.allProducts")}
           </LocalizedClientLink>
         </div>
       </section>

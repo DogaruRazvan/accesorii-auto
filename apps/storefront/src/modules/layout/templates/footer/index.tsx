@@ -4,12 +4,14 @@ import { clx } from "@modules/common/components/ui";
 import Image from "next/image";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import { getT } from "@lib/i18n/server";
 
 export default async function Footer() {
   const { collections } = await listCollections({
     fields: "*products",
   });
   const productCategories = await listCategories();
+  const t = await getT();
 
   return (
     <footer className="w-full bg-card border-t border-line text-subtle">
@@ -26,14 +28,14 @@ export default async function Footer() {
               />
             </LocalizedClientLink>
             <p className="text-sm text-subtle">
-              Tot ce ai nevoie, într-un singur loc.
+              {t("footer.tagline")}
             </p>
           </div>
           <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {productCategories && productCategories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="text-sm font-semibold text-content mb-1">
-                  Categorii
+                  {t("footer.categories")}
                 </span>
                 <ul
                   className="grid grid-cols-1 gap-2"
@@ -91,7 +93,7 @@ export default async function Footer() {
             {collections && collections.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="text-sm font-semibold text-content mb-1">
-                  Colecții
+                  {t("footer.collections")}
                 </span>
                 <ul
                   className={clx(
@@ -115,14 +117,14 @@ export default async function Footer() {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="text-sm font-semibold text-content mb-1">Informații</span>
+              <span className="text-sm font-semibold text-content mb-1">{t("footer.info")}</span>
               <ul className="grid grid-cols-1 gap-y-2 text-subtle txt-small">
                 <li>
                   <LocalizedClientLink
                     href="/content/termeni-si-conditii"
                     className="hover:text-content"
                   >
-                    Termeni și condiții
+                    {t("footer.terms")}
                   </LocalizedClientLink>
                 </li>
                 <li>
@@ -130,7 +132,7 @@ export default async function Footer() {
                     href="/content/politica-de-confidentialitate"
                     className="hover:text-content"
                   >
-                    Confidențialitate (GDPR)
+                    {t("footer.privacy")}
                   </LocalizedClientLink>
                 </li>
                 <li>
@@ -138,7 +140,7 @@ export default async function Footer() {
                     href="/content/politica-de-retur"
                     className="hover:text-content"
                   >
-                    Politică de retur
+                    {t("footer.returns")}
                   </LocalizedClientLink>
                 </li>
                 <li>
@@ -146,7 +148,7 @@ export default async function Footer() {
                     href="/content/politica-cookies"
                     className="hover:text-content"
                   >
-                    Politică cookies
+                    {t("footer.cookies")}
                   </LocalizedClientLink>
                 </li>
                 <li>
@@ -154,7 +156,7 @@ export default async function Footer() {
                     href="/content/anpc"
                     className="hover:text-content"
                   >
-                    ANPC
+                    {t("footer.anpc")}
                   </LocalizedClientLink>
                 </li>
               </ul>
@@ -163,7 +165,7 @@ export default async function Footer() {
         </div>
         <div className="flex w-full py-8 border-t border-line justify-between text-subtle">
           <p className="text-xs">
-            © {new Date().getFullYear()} MENV Divers. Toate drepturile rezervate.
+            © {new Date().getFullYear()} MENV Divers. {t("footer.rights")}
           </p>
         </div>
       </div>

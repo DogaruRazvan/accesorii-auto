@@ -1,7 +1,9 @@
+import { getT } from "@lib/i18n/server"
+
 const ITEMS = [
   {
-    title: "Livrare rapidă",
-    sub: "În toată țara, 1-3 zile",
+    titleKey: "trust.shippingTitle",
+    subKey: "trust.shippingSub",
     icon: (
       <>
         <path d="M1 3h15v13H1z" />
@@ -12,8 +14,8 @@ const ITEMS = [
     ),
   },
   {
-    title: "Retur în 14 zile",
-    sub: "Simplu, fără bătăi de cap",
+    titleKey: "trust.returnTitle",
+    subKey: "trust.returnSub",
     icon: (
       <>
         <polyline points="1 4 1 10 7 10" />
@@ -22,8 +24,8 @@ const ITEMS = [
     ),
   },
   {
-    title: "Plată securizată",
-    sub: "Card sau ramburs la livrare",
+    titleKey: "trust.payTitle",
+    subKey: "trust.paySub",
     icon: (
       <>
         <rect x="1" y="4" width="22" height="16" rx="2" />
@@ -33,14 +35,15 @@ const ITEMS = [
   },
 ]
 
-export default function TrustBar() {
+export default async function TrustBar() {
+  const t = await getT()
   return (
     <section className="border-y border-line bg-card">
       <div className="content-container py-6 small:py-7">
         <ul className="grid grid-cols-1 xsmall:grid-cols-3 gap-5 xsmall:gap-4">
           {ITEMS.map((item) => (
             <li
-              key={item.title}
+              key={item.titleKey}
               className="flex items-center gap-3.5 justify-center xsmall:justify-start"
             >
               <span className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-muted text-content/70">
@@ -60,10 +63,10 @@ export default function TrustBar() {
               </span>
               <div>
                 <p className="text-sm font-semibold text-content leading-tight">
-                  {item.title}
+                  {t(item.titleKey)}
                 </p>
                 <p className="text-xs text-subtle leading-tight mt-0.5">
-                  {item.sub}
+                  {t(item.subKey)}
                 </p>
               </div>
             </li>
