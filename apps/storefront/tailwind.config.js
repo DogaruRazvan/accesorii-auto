@@ -41,6 +41,18 @@ module.exports = {
           light: "#EFF6FF",     // fundal albăstrui-deschis
           dark: "#0F172A",      // text dark / fundal header
         },
+        // Tokeni semantici pentru light/dark mode. Valorile vin din variabile CSS
+        // (vezi globals.css) si se schimba automat cand <html> are clasa .dark.
+        // Foloseste-le peste tot: bg-page, bg-card, text-content, text-subtle,
+        // bg-cta, border-line. Suporta opacitate (ex. text-content/70).
+        page: "rgb(var(--c-page) / <alpha-value>)",
+        card: "rgb(var(--c-card) / <alpha-value>)",
+        content: "rgb(var(--c-text) / <alpha-value>)",
+        subtle: "rgb(var(--c-text-secondary) / <alpha-value>)",
+        cta: "rgb(var(--c-cta) / <alpha-value>)",
+        "cta-hover": "rgb(var(--c-cta-hover) / <alpha-value>)",
+        line: "rgb(var(--c-border) / <alpha-value>)",
+        muted: "rgb(var(--c-muted) / <alpha-value>)",
       },
       borderRadius: {
         none: "0px",

@@ -17,7 +17,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
       {/* Hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="flex flex-col gap-[5px] p-1 text-white transition-opacity hover:opacity-70"
+        className="flex flex-col gap-[5px] p-1 text-content transition-opacity hover:opacity-70"
         data-testid="nav-menu-button"
         aria-label="Deschide meniu"
       >
@@ -39,11 +39,11 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
       <div
         className={`fixed top-0 left-0 h-full w-[82%] max-w-xs z-[70] transform transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "-translate-x-full"
-        } bg-[#0D0D11] border-r border-white/[0.08] shadow-[4px_0_40px_rgba(0,0,0,0.7)]`}
+        } bg-card border-r border-line shadow-[4px_0_40px_rgba(0,0,0,0.5)]`}
         data-testid="nav-menu-popup"
       >
         {/* Header cu logo */}
-        <div className="flex items-center justify-between px-6 h-20 border-b border-white/10">
+        <div className="flex items-center justify-between px-6 h-20 border-b border-line">
           <Image
             src="/logo.png"
             alt="MENV Divers"
@@ -53,7 +53,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
           />
           <button
             onClick={() => setOpen(false)}
-            className="p-1 text-white/60 transition-all duration-200 hover:text-white active:scale-90"
+            className="p-1 text-content/60 transition-all duration-200 hover:text-content active:scale-90"
             data-testid="close-menu-button"
             aria-label="Închide meniu"
           >
@@ -77,7 +77,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
               key={href + label}
               href={href}
               onClick={() => setOpen(false)}
-              className="py-4 text-2xl font-light tracking-tight text-white/85 transition-all duration-200 hover:pl-1.5 hover:text-white active:opacity-50"
+              className="py-4 text-2xl font-light tracking-tight text-content/85 transition-all duration-200 hover:pl-1.5 hover:text-content active:opacity-50"
               data-testid={`${label.toLowerCase()}-link`}
             >
               {label}

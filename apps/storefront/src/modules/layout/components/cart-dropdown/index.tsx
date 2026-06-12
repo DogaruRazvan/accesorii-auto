@@ -90,7 +90,7 @@ const CartDropdown = ({
       <Popover className="relative h-full">
         <PopoverButton className="h-full flex items-center">
           <LocalizedClientLink
-            className="relative flex items-center text-white/70 transition-all duration-200 hover:text-brand-accent hover:scale-110"
+            className="relative flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
             href="/cart"
             data-testid="nav-cart-link"
             aria-label="Coș"
@@ -101,7 +101,7 @@ const CartDropdown = ({
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-brand-accent text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
+              <span className="absolute -top-2 -right-2 bg-cta text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}
@@ -119,15 +119,15 @@ const CartDropdown = ({
         >
           <PopoverPanel
             static
-            className="hidden small:block absolute top-[calc(100%+14px)] right-0 bg-white rounded-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.35)] border border-gray-100 w-[400px] text-gray-900 overflow-hidden"
+            className="hidden small:block absolute top-[calc(100%+14px)] right-0 bg-card rounded-2xl shadow-[0_24px_60px_-15px_rgba(0,0,0,0.35)] border border-line w-[400px] text-content overflow-hidden"
             data-testid="nav-cart-dropdown"
           >
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div className="px-5 py-4 border-b border-line flex items-center justify-between">
               <h3 className="text-base font-semibold tracking-tight">
                 Coșul tău
               </h3>
               {totalItems > 0 && (
-                <span className="text-xs font-medium text-gray-400">
+                <span className="text-xs font-medium text-subtle">
                   {totalItems} {totalItems === 1 ? "produs" : "produse"}
                 </span>
               )}
@@ -137,9 +137,9 @@ const CartDropdown = ({
             {cartState && cartState.items?.length ? (
               <div className="px-5 pt-4">
                 {remainingForFree > 0 ? (
-                  <p className="text-xs text-gray-500 mb-2">
+                  <p className="text-xs text-subtle mb-2">
                     Mai adaugă{" "}
-                    <span className="font-semibold text-gray-900">
+                    <span className="font-semibold text-content">
                       {convertToLocale({
                         amount: remainingForFree,
                         currency_code: cartState.currency_code,
@@ -155,9 +155,9 @@ const CartDropdown = ({
                     Felicitări! Ai livrare gratuită
                   </p>
                 )}
-                <div className="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+                <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-brand-accent transition-all duration-500"
+                    className="h-full rounded-full bg-cta transition-all duration-500"
                     style={{ width: `${freeShippingPct}%` }}
                   />
                 </div>
@@ -192,7 +192,7 @@ const CartDropdown = ({
                         <div className="flex flex-col justify-between flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex flex-col min-w-0">
-                              <h3 className="text-sm font-medium text-gray-900 truncate">
+                              <h3 className="text-sm font-medium text-content truncate">
                                 <LocalizedClientLink
                                   href={`/products/${item.product_handle}`}
                                   data-testid="product-link"
@@ -200,7 +200,7 @@ const CartDropdown = ({
                                   {item.title}
                                 </LocalizedClientLink>
                               </h3>
-                              <div className="text-xs text-gray-400">
+                              <div className="text-xs text-subtle">
                                 <LineItemOptions
                                   variant={item.variant}
                                   data-testid="cart-item-variant"
@@ -208,14 +208,14 @@ const CartDropdown = ({
                                 />
                               </div>
                               <span
-                                className="text-xs text-gray-400 mt-0.5"
+                                className="text-xs text-subtle mt-0.5"
                                 data-testid="cart-item-quantity"
                                 data-value={item.quantity}
                               >
                                 Cantitate: {item.quantity}
                               </span>
                             </div>
-                            <div className="text-sm font-semibold text-gray-900 shrink-0">
+                            <div className="text-sm font-semibold text-content shrink-0">
                               <LineItemPrice
                                 item={item}
                                 style="tight"
@@ -225,7 +225,7 @@ const CartDropdown = ({
                           </div>
                           <DeleteButton
                             id={item.id}
-                            className="mt-1 text-xs text-gray-400 hover:text-red-500"
+                            className="mt-1 text-xs text-subtle hover:text-red-500"
                             data-testid="cart-item-remove-button"
                           >
                             Elimină
@@ -234,14 +234,14 @@ const CartDropdown = ({
                       </div>
                     ))}
                 </div>
-                <div className="px-5 py-4 border-t border-gray-100 flex flex-col gap-y-3">
+                <div className="px-5 py-4 border-t border-line flex flex-col gap-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-subtle">
                       Subtotal{" "}
                       <span className="text-xs">(fără TVA)</span>
                     </span>
                     <span
-                      className="text-lg font-bold tracking-tight text-gray-950"
+                      className="text-lg font-bold tracking-tight text-content"
                       data-testid="cart-subtotal"
                       data-value={subtotal}
                     >
@@ -254,7 +254,7 @@ const CartDropdown = ({
                   <LocalizedClientLink
                     href="/cart"
                     onClick={close}
-                    className="w-full inline-flex items-center justify-center h-12 rounded-full bg-brand-accent text-white text-sm font-semibold transition-all hover:brightness-110 active:scale-[0.98]"
+                    className="w-full inline-flex items-center justify-center h-12 rounded-full bg-cta hover:bg-cta-hover text-white text-sm font-semibold transition-all active:scale-[0.98]"
                     data-testid="go-to-cart-button"
                   >
                     Vezi coșul
@@ -263,18 +263,18 @@ const CartDropdown = ({
               </>
             ) : (
               <div className="flex py-14 flex-col gap-y-4 items-center justify-center px-6 text-center">
-                <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center text-subtle">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <path d="M16 10a4 4 0 0 1-8 0" />
                   </svg>
                 </div>
-                <span className="text-sm text-gray-500">Coșul tău e gol.</span>
+                <span className="text-sm text-subtle">Coșul tău e gol.</span>
                 <LocalizedClientLink
                   href="/store"
                   onClick={close}
-                  className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-gray-950 text-white text-sm font-semibold transition-all hover:bg-gray-800 active:scale-95"
+                  className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-cta hover:bg-cta-hover text-white text-sm font-semibold transition-all active:scale-95"
                 >
                   Descoperă produsele
                 </LocalizedClientLink>

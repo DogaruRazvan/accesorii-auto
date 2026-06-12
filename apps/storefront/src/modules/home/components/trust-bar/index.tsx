@@ -35,7 +35,7 @@ const ITEMS = [
 
 export default function TrustBar() {
   return (
-    <section className="border-y border-gray-100 bg-white">
+    <section className="border-y border-line bg-card">
       <div className="content-container py-6 small:py-7">
         <ul className="grid grid-cols-1 xsmall:grid-cols-3 gap-5 xsmall:gap-4">
           {ITEMS.map((item) => (
@@ -43,7 +43,7 @@ export default function TrustBar() {
               key={item.title}
               className="flex items-center gap-3.5 justify-center xsmall:justify-start"
             >
-              <span className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-gray-50 text-gray-700">
+              <span className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-muted text-content/70">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -59,10 +59,10 @@ export default function TrustBar() {
                 </svg>
               </span>
               <div>
-                <p className="text-sm font-semibold text-gray-950 leading-tight">
+                <p className="text-sm font-semibold text-content leading-tight">
                   {item.title}
                 </p>
-                <p className="text-xs text-gray-500 leading-tight mt-0.5">
+                <p className="text-xs text-subtle leading-tight mt-0.5">
                   {item.sub}
                 </p>
               </div>

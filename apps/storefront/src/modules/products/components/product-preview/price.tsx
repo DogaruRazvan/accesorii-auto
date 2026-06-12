@@ -10,7 +10,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
     <div className="flex items-center gap-2">
       {price.price_type === "sale" && (
         <span
-          className="line-through text-gray-400 font-normal"
+          className="line-through text-subtle font-normal"
           data-testid="original-price"
         >
           {price.original_price}
@@ -18,7 +18,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
       )}
       <span
         className={clx({
-          "text-brand-accent": price.price_type === "sale",
+          "text-cta": price.price_type === "sale",
         })}
         data-testid="price"
       >

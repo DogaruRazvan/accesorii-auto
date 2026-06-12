@@ -29,16 +29,16 @@ export default async function ProductRail({
     <section className="content-container py-12 small:py-16">
       <div className="flex items-end justify-between mb-7">
         <div>
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-brand-accent">
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-cta">
             Colecție
           </span>
-          <h2 className="text-2xl small:text-3xl font-bold tracking-tight text-gray-950 mt-1.5">
+          <h2 className="text-2xl small:text-3xl font-bold tracking-tight text-content mt-1.5">
             {collection.title}
           </h2>
         </div>
         <LocalizedClientLink
           href={`/collections/${collection.handle}`}
-          className="group inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-950 transition-colors shrink-0"
+          className="group inline-flex items-center gap-1 text-sm font-medium text-subtle hover:text-content transition-colors shrink-0"
         >
           Vezi toate
           <svg

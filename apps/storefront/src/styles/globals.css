@@ -2,6 +2,44 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* ── Paleta light/dark (MENV Divers — portocaliu energic) ──────────────
+   Valorile sunt canale RGB (fara virgule) ca sa mearga cu opacitatea
+   Tailwind. Tokenii din tailwind.config.js (page, card, content...) le
+   citesc. Light = implicit pe :root, dark = cand <html> are clasa .dark. */
+:root {
+  --c-page: 250 250 250;          /* #FAFAFA fundal pagina */
+  --c-card: 255 255 255;          /* #FFFFFF carduri */
+  --c-text: 31 41 55;             /* #1F2937 text principal */
+  --c-text-secondary: 107 114 128;/* #6B7280 text secundar */
+  --c-cta: 234 88 12;             /* #EA580C buton/CTA */
+  --c-cta-hover: 194 65 18;       /* #C2410C hover buton */
+  --c-border: 229 231 235;        /* #E5E7EB linii/borduri */
+  --c-muted: 243 244 246;         /* #F3F4F6 suprafata discreta */
+  color-scheme: light;
+}
+
+.dark {
+  --c-page: 12 10 9;              /* #0C0A09 fundal pagina */
+  --c-card: 28 25 23;            /* #1C1917 carduri */
+  --c-text: 250 250 250;          /* #FAFAFA text principal */
+  --c-text-secondary: 168 162 158;/* #A8A29E text secundar */
+  --c-cta: 249 115 22;            /* #F97316 buton/CTA */
+  --c-cta-hover: 234 88 12;       /* #EA580C hover buton */
+  --c-border: 41 37 36;           /* #292524 linii/borduri */
+  --c-muted: 28 25 23;            /* #1C1917 suprafata discreta */
+  color-scheme: dark;
+}
+
+html {
+  background-color: rgb(var(--c-page));
+}
+
+body {
+  background-color: rgb(var(--c-page));
+  color: rgb(var(--c-text));
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 @layer utilities {
   /* Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {

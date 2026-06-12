@@ -42,7 +42,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
   }
 
   return (
-    <div className="w-full bg-white min-h-screen">
+    <div className="w-full bg-page min-h-screen">
 
       {/* ── CATEGORII ─────────────────────────────────── */}
       <section className="content-container pt-6 pb-0 small:pt-8">
@@ -121,7 +121,7 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
             })}
           </div>
         ) : (
-          <div className="rounded-3xl border-2 border-dashed border-gray-200 py-20 text-center text-sm text-gray-400">
+          <div className="rounded-3xl border-2 border-dashed border-line py-20 text-center text-sm text-subtle">
             Adaugă categorii din panoul de admin.
           </div>
         )}
@@ -129,15 +129,15 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
 
       {/* ── PRODUSE ───────────────────────────────────── */}
       {featured.length > 0 && region && (
-        <section className="mt-14 small:mt-20 border-t border-gray-100/80">
+        <section className="mt-14 small:mt-20 border-t border-line">
           <div className="content-container py-12 small:py-16">
             <div className="flex items-center justify-between mb-8 small:mb-10">
-              <p className="text-[11px] font-bold tracking-[0.22em] uppercase text-gray-400">
+              <p className="text-[11px] font-bold tracking-[0.22em] uppercase text-subtle">
                 În magazin acum
               </p>
               <LocalizedClientLink
                 href="/store?view=all"
-                className="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400 hover:text-gray-900 transition-colors"
+                className="text-[11px] font-bold tracking-[0.18em] uppercase text-subtle hover:text-content transition-colors"
               >
                 Vezi tot →
               </LocalizedClientLink>

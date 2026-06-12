@@ -31,13 +31,13 @@ export default async function ProductPreview({
         />
         <div className="mt-3.5 flex items-start justify-between gap-3">
           <h3
-            className="text-sm text-gray-700 font-medium leading-snug line-clamp-2 transition-colors group-hover:text-gray-950"
+            className="text-sm text-content/70 font-medium leading-snug line-clamp-2 transition-colors group-hover:text-content"
             data-testid="product-title"
           >
             {product.title}
           </h3>
           {cheapestPrice && (
-            <div className="shrink-0 text-sm font-semibold text-gray-950">
+            <div className="shrink-0 text-sm font-semibold text-content">
               <PreviewPrice price={cheapestPrice} />
             </div>
           )}

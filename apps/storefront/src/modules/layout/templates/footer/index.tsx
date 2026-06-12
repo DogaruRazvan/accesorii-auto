@@ -12,7 +12,7 @@ export default async function Footer() {
   const productCategories = await listCategories();
 
   return (
-    <footer className="w-full bg-[#0A0A0E] text-white/70">
+    <footer className="w-full bg-card border-t border-line text-subtle">
       <div className="content-container flex flex-col w-full">
         <div className="flex flex-col gap-y-10 xsmall:flex-row items-start justify-between py-20 small:py-28">
           <div className="flex flex-col gap-y-4 max-w-xs">
@@ -25,14 +25,14 @@ export default async function Footer() {
                 className="h-20 w-auto object-contain"
               />
             </LocalizedClientLink>
-            <p className="text-sm text-white/50">
+            <p className="text-sm text-subtle">
               Tot ce ai nevoie, într-un singur loc.
             </p>
           </div>
           <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
             {productCategories && productCategories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="text-sm font-semibold text-white mb-1">
+                <span className="text-sm font-semibold text-content mb-1">
                   Categorii
                 </span>
                 <ul
@@ -53,12 +53,12 @@ export default async function Footer() {
 
                     return (
                       <li
-                        className="flex flex-col gap-2 text-white/60 txt-small"
+                        className="flex flex-col gap-2 text-subtle txt-small"
                         key={c.id}
                       >
                         <LocalizedClientLink
                           className={clx(
-                            "hover:text-white",
+                            "hover:text-content",
                             children && "txt-small-plus"
                           )}
                           href={`/categories/${c.handle}`}
@@ -72,7 +72,7 @@ export default async function Footer() {
                               children.map((child) => (
                                 <li key={child.id}>
                                   <LocalizedClientLink
-                                    className="hover:text-white"
+                                    className="hover:text-content"
                                     href={`/categories/${child.handle}`}
                                     data-testid="category-link"
                                   >
@@ -90,12 +90,12 @@ export default async function Footer() {
             )}
             {collections && collections.length > 0 && (
               <div className="flex flex-col gap-y-2">
-                <span className="text-sm font-semibold text-white mb-1">
+                <span className="text-sm font-semibold text-content mb-1">
                   Colecții
                 </span>
                 <ul
                   className={clx(
-                    "grid grid-cols-1 gap-2 text-white/60 txt-small",
+                    "grid grid-cols-1 gap-2 text-subtle txt-small",
                     {
                       "grid-cols-2": (collections?.length || 0) > 3,
                     }
@@ -104,7 +104,7 @@ export default async function Footer() {
                   {collections?.slice(0, 6).map((c) => (
                     <li key={c.id}>
                       <LocalizedClientLink
-                        className="hover:text-white"
+                        className="hover:text-content"
                         href={`/collections/${c.handle}`}
                       >
                         {c.title}
@@ -115,12 +115,12 @@ export default async function Footer() {
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="text-sm font-semibold text-white mb-1">Informații</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-white/60 txt-small">
+              <span className="text-sm font-semibold text-content mb-1">Informații</span>
+              <ul className="grid grid-cols-1 gap-y-2 text-subtle txt-small">
                 <li>
                   <LocalizedClientLink
                     href="/content/termeni-si-conditii"
-                    className="hover:text-white"
+                    className="hover:text-content"
                   >
                     Termeni și condiții
                   </LocalizedClientLink>
@@ -128,7 +128,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/politica-de-confidentialitate"
-                    className="hover:text-white"
+                    className="hover:text-content"
                   >
                     Confidențialitate (GDPR)
                   </LocalizedClientLink>
@@ -136,7 +136,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/politica-de-retur"
-                    className="hover:text-white"
+                    className="hover:text-content"
                   >
                     Politică de retur
                   </LocalizedClientLink>
@@ -144,7 +144,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/politica-cookies"
-                    className="hover:text-white"
+                    className="hover:text-content"
                   >
                     Politică cookies
                   </LocalizedClientLink>
@@ -152,7 +152,7 @@ export default async function Footer() {
                 <li>
                   <LocalizedClientLink
                     href="/content/anpc"
-                    className="hover:text-white"
+                    className="hover:text-content"
                   >
                     ANPC
                   </LocalizedClientLink>
@@ -161,7 +161,7 @@ export default async function Footer() {
             </div>
           </div>
         </div>
-        <div className="flex w-full py-8 border-t border-white/10 justify-between text-white/40">
+        <div className="flex w-full py-8 border-t border-line justify-between text-subtle">
           <p className="text-xs">
             © {new Date().getFullYear()} MENV Divers. Toate drepturile rezervate.
           </p>

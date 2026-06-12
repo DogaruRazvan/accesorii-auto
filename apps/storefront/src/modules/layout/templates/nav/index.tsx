@@ -6,13 +6,14 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import MobileMenu from "@modules/layout/components/side-menu"
 import NavSearchBar from "@modules/layout/components/nav-search"
+import ThemeToggle from "@modules/layout/components/theme-toggle"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
 
   return (
     <div className="sticky top-0 inset-x-0 z-50">
-      <header className="relative h-20 mx-auto bg-[#0A0A0E] border-b border-white/10">
+      <header className="relative h-20 mx-auto bg-page border-b border-line">
         <nav className="content-container flex items-center justify-between w-full h-full gap-x-4">
 
           {/* Left: hamburger (mobile) + logo + desktop links */}
@@ -33,12 +34,12 @@ export default async function Nav() {
                 priority
                 className="h-14 w-auto object-contain"
               />
-              <span className="font-display text-lg small:text-xl font-bold tracking-tight text-white leading-none whitespace-nowrap">
+              <span className="font-display text-lg small:text-xl font-bold tracking-tight text-content leading-none whitespace-nowrap">
                 MENV{" "}
-                <span className="font-medium text-white/55">Divers</span>
+                <span className="font-medium text-content/50">Divers</span>
               </span>
             </LocalizedClientLink>
-            <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-white/70">
+            <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-content/70">
               <NavLink href="/store">Magazin</NavLink>
             </div>
           </div>
@@ -48,11 +49,12 @@ export default async function Nav() {
             <NavSearchBar />
           </Suspense>
 
-          {/* Right: account + cart */}
-          <div className="flex items-center gap-x-5 shrink-0">
+          {/* Right: theme toggle + account + cart */}
+          <div className="flex items-center gap-x-3 small:gap-x-4 shrink-0">
+            <ThemeToggle />
             <LocalizedClientLink
               href="/account"
-              className="hidden small:flex items-center text-white/70 transition-all duration-200 hover:text-brand-accent hover:scale-110"
+              className="hidden small:flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
               data-testid="nav-account-link"
               aria-label="Contul meu"
             >
@@ -65,7 +67,7 @@ export default async function Nav() {
               fallback={
                 <LocalizedClientLink
                   href="/cart"
-                  className="flex items-center text-white/70 transition-all duration-200 hover:text-brand-accent hover:scale-110"
+                  className="flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
                   data-testid="nav-cart-link"
                   aria-label="Coș"
                 >
@@ -88,7 +90,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <LocalizedClientLink
       href={href}
-      className="relative py-1 transition-colors duration-200 hover:text-white after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:rounded-full after:bg-brand-accent after:transition-all after:duration-300 hover:after:w-full"
+      className="relative py-1 transition-colors duration-200 hover:text-content after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:rounded-full after:bg-cta after:transition-all after:duration-300 hover:after:w-full"
     >
       {children}
     </LocalizedClientLink>

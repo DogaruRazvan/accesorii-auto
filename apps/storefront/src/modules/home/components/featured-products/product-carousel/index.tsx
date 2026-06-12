@@ -44,14 +44,14 @@ const ProductCarousel = ({ children }: { children: React.ReactNode }) => {
       <button
         onClick={() => scroll(-1)}
         aria-label="Înapoi"
-        className="hidden small:flex absolute left-1 top-[38%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur shadow-lg items-center justify-center text-gray-800 opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95"
+        className="hidden small:flex absolute left-1 top-[38%] -translate-y-1/2 w-11 h-11 rounded-full bg-card border border-line backdrop-blur shadow-lg items-center justify-center text-content opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:scale-110 active:scale-95"
       >
         <Chevron dir="left" />
       </button>
       <button
         onClick={() => scroll(1)}
         aria-label="Înainte"
-        className="hidden small:flex absolute right-1 top-[38%] -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 backdrop-blur shadow-lg items-center justify-center text-gray-800 opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 active:scale-95"
+        className="hidden small:flex absolute right-1 top-[38%] -translate-y-1/2 w-11 h-11 rounded-full bg-card border border-line backdrop-blur shadow-lg items-center justify-center text-content opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:scale-110 active:scale-95"
       >
         <Chevron dir="right" />
       </button>
