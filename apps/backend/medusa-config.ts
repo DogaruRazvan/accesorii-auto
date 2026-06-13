@@ -51,6 +51,37 @@ if (process.env.S3_ACCESS_KEY_ID) {
   })
 }
 
+// Notificari: provider local pentru feed-ul din admin (mereu) + Resend pentru
+// emailuri catre clienti. Resend se activeaza DOAR cand exista RESEND_API_KEY,
+// ca backend-ul sa nu crape cand cheia nu e inca setata.
+const notificationProviders: any[] = [
+  {
+    resolve: "@medusajs/medusa/notification-local",
+    id: "local",
+    options: {
+      name: "Local Notification Provider",
+      channels: ["feed"],
+    },
+  },
+]
+
+if (process.env.RESEND_API_KEY) {
+  notificationProviders.push({
+    resolve: "./src/modules/resend",
+    id: "resend",
+    options: {
+      channels: ["email"],
+      api_key: process.env.RESEND_API_KEY,
+      from: process.env.RESEND_FROM,
+    },
+  })
+}
+
+modules.push({
+  resolve: "@medusajs/medusa/notification",
+  options: { providers: notificationProviders },
+})
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
