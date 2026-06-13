@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useMemo, useRef } from "react"
+import { Suspense, useEffect, useMemo, useRef } from "react"
 
 type ProgressRef = { current: number }
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
@@ -25,6 +25,11 @@ const CAM_START = new THREE.Vector3(3.2, -0.3, 8.5)
 const CAM_END = new THREE.Vector3(0, 0.6, 4.2)
 const LOOK_AT = new THREE.Vector3(0, 0, 0)
 
+// Pe mobil (sub breakpoint-ul `small` = 1024px) departam camera ca modelul sa
+// para ~40% mai mic. 1.65 ≈ -39% marime aparenta.
+const MOBILE_BREAKPOINT = 1024
+const MOBILE_ZOOM_OUT = 1.65
+
 /* ─── Easing ───────────────────────────────────────────────────────────── */
 const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1)
 const easeInOutCubic = (t: number) =>
@@ -46,6 +51,17 @@ function CinematicModel({ progress }: { progress: ProgressRef }) {
     return { offset: center.clone().multiplyScalar(-1), scale: TARGET_SIZE / maxDim }
   }, [scene])
 
+  // Detecteaza mobil (latimea ecranului) — fara re-render, citit in useFrame
+  const isMobile = useRef(false)
+  useEffect(() => {
+    const update = () => {
+      isMobile.current = window.innerWidth < MOBILE_BREAKPOINT
+    }
+    update()
+    window.addEventListener("resize", update)
+    return () => window.removeEventListener("resize", update)
+  }, [])
+
   useFrame(() => {
     const p = progress.current
 
@@ -59,6 +75,9 @@ function CinematicModel({ progress }: { progress: ProgressRef }) {
     // Camera: dolly + zoom pe tot scroll-ul, lin
     const ct = easeInOutCubic(clamp01(p))
     const target = CAM_START.clone().lerp(CAM_END, ct)
+    // Pe mobil departam camera (lookAt = origine) -> model ~40% mai mic,
+    // umbra ramane aliniata sub el (nu scalam mesh-ul).
+    if (isMobile.current) target.multiplyScalar(MOBILE_ZOOM_OUT)
     camera.position.lerp(target, 0.1)
     camera.lookAt(LOOK_AT)
   })
