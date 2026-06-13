@@ -8,6 +8,7 @@ import MobileMenu from "@modules/layout/components/side-menu"
 import NavSearchBar from "@modules/layout/components/nav-search"
 import ThemeToggle from "@modules/layout/components/theme-toggle"
 import LanguageToggle from "@modules/layout/components/language-toggle"
+import { navIconButton } from "@modules/layout/components/nav-icon/style"
 import { getT } from "@lib/i18n/server"
 
 export default async function Nav() {
@@ -58,11 +59,11 @@ export default async function Nav() {
             <ThemeToggle />
             <LocalizedClientLink
               href="/account"
-              className="hidden small:flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
+              className={`hidden small:flex ${navIconButton}`}
               data-testid="nav-account-link"
               aria-label={t("nav.account")}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
@@ -71,7 +72,7 @@ export default async function Nav() {
               fallback={
                 <LocalizedClientLink
                   href="/cart"
-                  className="flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
+                  className={navIconButton}
                   data-testid="nav-cart-link"
                   aria-label="Coș"
                 >
@@ -89,12 +90,12 @@ export default async function Nav() {
   )
 }
 
-/* Desktop link cu underline auriu care creste de la stanga la hover */
+/* Desktop link ca pill discret — capata suprafata si accent verde la hover */
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <LocalizedClientLink
       href={href}
-      className="relative py-1 transition-colors duration-200 hover:text-content after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:rounded-full after:bg-cta after:transition-all after:duration-300 hover:after:w-full"
+      className="px-3.5 py-2 rounded-full text-content/70 hover:text-cta hover:bg-cta/10 transition-all duration-200"
     >
       {children}
     </LocalizedClientLink>
@@ -103,7 +104,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 function CartIcon() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
       <line x1="3" y1="6" x2="21" y2="6" />
       <path d="M16 10a4 4 0 0 1-8 0" />

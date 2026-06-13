@@ -3,6 +3,7 @@
 import { HttpTypes } from "@medusajs/types"
 import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { navIconButton } from "@modules/layout/components/nav-icon/style"
 import { useState } from "react"
 import { useTranslations } from "@lib/i18n/context"
 
@@ -19,13 +20,13 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
       {/* Hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="flex flex-col gap-[5px] p-1 text-content transition-opacity hover:opacity-70"
+        className={`${navIconButton} flex-col gap-[5px]`}
         data-testid="nav-menu-button"
         aria-label="Deschide meniu"
       >
-        <span className="block w-5 h-0.5 bg-current rounded-full" />
-        <span className="block w-5 h-0.5 bg-current rounded-full" />
-        <span className="block w-5 h-0.5 bg-current rounded-full" />
+        <span className="block w-[18px] h-0.5 bg-current rounded-full" />
+        <span className="block w-[18px] h-0.5 bg-current rounded-full" />
+        <span className="block w-[18px] h-0.5 bg-current rounded-full" />
       </button>
 
       {/* Backdrop */}

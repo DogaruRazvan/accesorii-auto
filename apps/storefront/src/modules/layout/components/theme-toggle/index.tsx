@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { navIconButton } from "@modules/layout/components/nav-icon/style"
 
 // Comutator light/dark. La prima vizita urmeaza setarea device-ului
 // (prefers-color-scheme); cand utilizatorul apasa, alegerea lui se salveaza
@@ -48,7 +49,7 @@ const ThemeToggle = () => {
     <button
       onClick={toggle}
       aria-label={isDark ? "Comută pe mod luminos" : "Comută pe mod întunecat"}
-      className="relative flex items-center justify-center w-9 h-9 rounded-full text-content/70 hover:text-cta hover:bg-content/5 transition-all duration-200 active:scale-90"
+      className={navIconButton}
     >
       {/* Soare (vizibil pe dark -> apasa pt light) / Luna (vizibil pe light) */}
       <span suppressHydrationWarning>

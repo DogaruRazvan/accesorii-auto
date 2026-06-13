@@ -21,7 +21,7 @@ const LanguageToggle = () => {
 
   return (
     <div
-      className="flex items-center rounded-full border border-line p-0.5 text-[11px] font-semibold select-none"
+      className="flex items-center gap-0.5 rounded-full bg-content/[0.04] ring-1 ring-line p-1 text-[11px] font-bold select-none"
       role="group"
       aria-label="Selectează limba"
     >
@@ -31,10 +31,10 @@ const LanguageToggle = () => {
           onClick={() => setLocale(l)}
           disabled={pending}
           aria-pressed={locale === l}
-          className={`px-2 py-1 rounded-full uppercase tracking-wide transition-colors duration-200 ${
+          className={`px-2.5 py-1 rounded-full uppercase tracking-wide transition-all duration-200 ${
             locale === l
-              ? "bg-cta text-white"
-              : "text-content/60 hover:text-content"
+              ? "bg-cta text-white shadow-sm"
+              : "text-content/55 hover:text-content hover:bg-content/5"
           }`}
         >
           {l}

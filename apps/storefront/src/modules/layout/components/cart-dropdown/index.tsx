@@ -12,6 +12,7 @@ import DeleteButton from "@modules/common/components/delete-button"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import { navIconButton } from "@modules/layout/components/nav-icon/style"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
@@ -90,18 +91,18 @@ const CartDropdown = ({
       <Popover className="relative h-full">
         <PopoverButton className="h-full flex items-center">
           <LocalizedClientLink
-            className="relative flex items-center text-content/70 transition-all duration-200 hover:text-cta hover:scale-110"
+            className={navIconButton}
             href="/cart"
             data-testid="nav-cart-link"
             aria-label="Coș"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-cta text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center leading-none">
+              <span className="absolute -top-1.5 -right-1.5 bg-cta text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center leading-none ring-2 ring-page">
                 {totalItems > 9 ? "9+" : totalItems}
               </span>
             )}
