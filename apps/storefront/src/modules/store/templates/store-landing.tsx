@@ -7,24 +7,19 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import ProductPreview from "@modules/products/components/product-preview"
 import { getT } from "@lib/i18n/server"
 
-// Paleta editorială — alternează cald/rece, deschis/închis (fallback fără imagine)
-const TILES: { bg: string; text: string }[] = [
-  { bg: "#0A0A0E", text: "#FFFFFF" },
-  { bg: "#F5EFE6", text: "#1A0F00" },
-  { bg: "#E8F0FB", text: "#0D1F3C" },
-  { bg: "#EAEAE6", text: "#1A1A12" },
-  { bg: "#111827", text: "#FFFFFF" },
-  { bg: "#FBF0EE", text: "#2C1208" },
-  { bg: "#F0EDF9", text: "#1A0F2E" },
-  { bg: "#1C1C2A", text: "#FFFFFF" },
+// Gradiente moderne, on-brand (fallback cand categoria n-are imagine).
+// Toate suficient de inchise pentru text alb -> aspect coerent si fresh.
+const GRADIENTS: string[] = [
+  "linear-gradient(135deg,#059669,#10B981)", // emerald
+  "linear-gradient(135deg,#0F766E,#14B8A6)", // teal
+  "linear-gradient(135deg,#1E293B,#334155)", // slate
+  "linear-gradient(135deg,#065F46,#0D9488)", // deep green
+  "linear-gradient(135deg,#0C0A09,#292524)", // near-black
+  "linear-gradient(135deg,#134E4A,#1FA2A6)", // cyan-teal
 ]
 
 function isWide(i: number) {
   return i === 0 || i % 7 === 5
-}
-
-function isDark(textColor: string) {
-  return textColor === "#FFFFFF"
 }
 
 export default async function StoreLanding({ countryCode }: { countryCode: string }) {
@@ -49,103 +44,78 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
       {/* ── CATEGORII ─────────────────────────────────── */}
       <section className="content-container pt-6 pb-0 small:pt-8">
         {topCategories.length > 0 ? (
-          <div className="grid grid-cols-2 medium:grid-cols-3 gap-2.5 small:gap-3">
+          <div className="grid grid-cols-2 medium:grid-cols-3 gap-3 small:gap-4">
             {topCategories.map((cat, i) => {
-              const tile = TILES[i % TILES.length]
+              const gradient = GRADIENTS[i % GRADIENTS.length]
               const wide = isWide(i)
               const isFirst = i === 0
               const imageUrl = (cat.metadata as Record<string, unknown> | null)?.image as string | undefined
               const hasImage = !!imageUrl
-              const dark = hasImage ? true : isDark(tile.text)
 
               return (
                 <LocalizedClientLink
                   key={cat.id}
                   href={`/categories/${cat.handle}`}
-                  style={hasImage ? {} : { backgroundColor: tile.bg, color: tile.text }}
+                  style={hasImage ? {} : { backgroundImage: gradient }}
                   className={[
-                    "group relative overflow-hidden rounded-2xl small:rounded-3xl select-none cursor-pointer",
-                    "transition-all duration-500 hover:scale-[0.985] active:scale-[0.975]",
-                    "ring-2 ring-transparent hover:ring-cta ring-offset-2 ring-offset-page hover:ring-offset-page",
-                    hasImage ? "bg-neutral-900 text-white" : "",
+                    "group relative overflow-hidden rounded-3xl select-none cursor-pointer text-white",
+                    "shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1",
+                    "ring-1 ring-black/5",
                     wide ? "col-span-2 medium:col-span-2" : "",
                     isFirst
-                      ? "h-[260px] small:h-[380px]"
+                      ? "h-[260px] small:h-[400px]"
                       : wide
-                      ? "h-[160px] small:h-[220px]"
-                      : "h-[160px] small:h-[210px]",
+                      ? "h-[170px] small:h-[230px]"
+                      : "h-[170px] small:h-[220px]",
                   ]
                     .filter(Boolean)
                     .join(" ")}
                 >
                   {/* Imagine de fundal */}
                   {hasImage && (
-                    <>
-                      <Image
-                        src={imageUrl}
-                        alt={cat.name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes={wide ? "(max-width:768px) 100vw, 66vw" : "(max-width:768px) 50vw, 33vw"}
-                      />
-                      {/* Gradient pentru lizibilitate text */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10 transition-opacity duration-500 group-hover:from-black/80" />
-                    </>
-                  )}
-
-                  {/* Hover overlay (doar fără imagine) */}
-                  {!hasImage && (
-                    <div
-                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      style={{
-                        background: dark
-                          ? "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%)"
-                          : "linear-gradient(135deg, rgba(0,0,0,0.05) 0%, transparent 60%)",
-                      }}
+                    <Image
+                      src={imageUrl}
+                      alt={cat.name}
+                      fill
+                      className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-110"
+                      sizes={wide ? "(max-width:768px) 100vw, 66vw" : "(max-width:768px) 50vw, 33vw"}
                     />
                   )}
 
-                  {/* Număr decorativ watermark (doar fără imagine) */}
+                  {/* Overlay lizibilitate (mereu) + luminare la hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent transition-opacity duration-500" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.18),transparent_55%)]" />
+
+                  {/* Initiala mare, decorativa (doar fara imagine) */}
                   {!hasImage && (
                     <span
-                      className="absolute -bottom-3 -right-2 font-black leading-none pointer-events-none select-none"
-                      style={{
-                        fontSize: isFirst ? "clamp(100px,18vw,200px)" : "clamp(64px,12vw,130px)",
-                        opacity: 0.04,
-                        color: tile.text,
-                        lineHeight: 1,
-                      }}
+                      className="absolute -bottom-6 -right-3 font-black leading-none pointer-events-none select-none text-white/10"
+                      style={{ fontSize: isFirst ? "clamp(140px,20vw,240px)" : "clamp(90px,14vw,150px)" }}
                     >
-                      {String(i + 1).padStart(2, "0")}
+                      {cat.name.charAt(0).toUpperCase()}
                     </span>
                   )}
 
-                  {/* Content */}
-                  <div className="absolute inset-0 p-5 small:p-7 flex flex-col justify-end gap-1">
+                  {/* Sageata glass, mereu vizibila, se umple la hover */}
+                  <span className="absolute top-4 right-4 small:top-5 small:right-5 flex items-center justify-center w-9 h-9 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/25 transition-all duration-300 group-hover:bg-cta group-hover:ring-cta">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                      <line x1="7" y1="17" x2="17" y2="7" />
+                      <polyline points="7 7 17 7 17 17" />
+                    </svg>
+                  </span>
+
+                  {/* Content jos */}
+                  <div className="absolute inset-0 p-5 small:p-7 flex flex-col justify-end gap-1.5">
                     <h2
                       className={[
-                        "font-bold tracking-tight leading-tight transition-transform duration-300 group-hover:translate-x-1",
-                        hasImage ? "text-white" : "",
-                        isFirst
-                          ? "text-3xl small:text-[2.75rem]"
-                          : "text-xl small:text-2xl",
+                        "font-bold tracking-tight leading-tight text-white drop-shadow-sm transition-transform duration-300 group-hover:translate-x-1",
+                        isFirst ? "text-3xl small:text-[2.75rem]" : "text-xl small:text-2xl",
                       ].join(" ")}
                     >
                       {cat.name}
                     </h2>
-
-                    {/* "Explorează →" apare la hover */}
-                    <div
-                      className={[
-                        "flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase",
-                        "transition-all duration-300 opacity-0 group-hover:opacity-60 translate-y-1 group-hover:translate-y-0",
-                        hasImage ? "text-white" : "",
-                      ].join(" ")}
-                    >
+                    <div className="flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.18em] uppercase text-white/80 transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0">
                       <span>{t("landing.explore")}</span>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="9 18 15 12 9 6" />
-                      </svg>
                     </div>
                   </div>
                 </LocalizedClientLink>

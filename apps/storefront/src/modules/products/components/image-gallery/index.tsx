@@ -23,7 +23,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
 
   if (count === 0) {
     return (
-      <div className="aspect-[4/5] w-full rounded-3xl bg-gradient-to-br from-gray-100 to-gray-50 border border-gray-100 flex items-center justify-center text-gray-300">
+      <div className="w-full small:max-w-[380px] small:mx-auto aspect-[4/5] rounded-3xl bg-muted border border-line flex items-center justify-center text-content/20">
         <PlaceholderImage size={48} />
       </div>
     )
@@ -43,10 +43,10 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full small:max-w-[380px] small:mx-auto">
       {/* Viewport principal */}
       <div
-        className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-gray-50 border border-gray-100 group select-none"
+        className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-muted border border-line group select-none"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
