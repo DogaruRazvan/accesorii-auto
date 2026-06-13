@@ -31,6 +31,8 @@ const ro: Messages = {
   "hero.subtitle": "Mii de produse din toate categoriile, livrate rapid oriunde în țară.",
   "hero.ctaPrimary": "Vezi produsele",
   "hero.ctaSecondary": "Toate produsele",
+  "hero.scrollHint": "Derulează",
+  "hero.revealText": "Mii de produse te așteaptă",
 
   // Trust bar
   "trust.shippingTitle": "Livrare rapidă",
@@ -160,6 +162,8 @@ const en: Messages = {
   "hero.subtitle": "Thousands of products across every category, delivered fast anywhere in the country.",
   "hero.ctaPrimary": "Browse products",
   "hero.ctaSecondary": "All products",
+  "hero.scrollHint": "Scroll",
+  "hero.revealText": "Thousands of products await",
 
   // Trust bar
   "trust.shippingTitle": "Fast delivery",

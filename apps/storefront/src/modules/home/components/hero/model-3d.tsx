@@ -1,92 +1,101 @@
 "use client"
 
-import { Suspense, useEffect, useRef } from "react"
+import { Suspense, useMemo, useRef } from "react"
+
+type ProgressRef = { current: number }
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { useGLTF, Environment, ContactShadows } from "@react-three/drei"
+import { useGLTF, Environment, ContactShadows, Float } from "@react-three/drei"
 import * as THREE from "three"
 
 const MODEL_PATH =
   process.env.NEXT_PUBLIC_HERO_MODEL || "/models/base_basic_pbr.glb"
 
-// Tweak these to frame the model correctly for the new asset:
-const MODEL_SCALE = 1.0     // increase if model appears too small
-const MODEL_Y = 0           // shift model up/down in world units
-const START_ROT_Y = 0.7     // ~40° profile angle at start
-const CAMERA_Y = 1.5
-const CAM_Z_START = 5.5     // wide shot (cinematic opening)
-const CAM_Z_END = 4.0       // zoomed-in (end of animation)
-const FOV = 42
+/* ─── Reglaje (modifica aici daca vrei alt look) ───────────────────────── */
+const TARGET_SIZE = 3.1         // inaltimea modelului in unitati (auto-scalat)
+const FRONT_ROT_Y = 0           // rotatia finala (cu fata la camera). Daca apare
+                                // cu spatele, pune Math.PI.
+const SPIN_TURNS = 1.15         // cate ture face pe tot scroll-ul
+// Sens INVERS fata de varianta veche: pleaca din partea cealalta.
+const START_ROT_Y = FRONT_ROT_Y - SPIN_TURNS * Math.PI * 2
+const ROT_DONE_AT = 0.72        // rotatia se termina la 72% din scroll
+                                // (ultima parte e doar zoom)
 
-function easeInOut(t: number) {
-  return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
-}
+// Camera: porneste departe / lateral / jos -> ajunge la cadru-erou (zoom)
+const CAM_START = new THREE.Vector3(3.2, -0.3, 8.5)
+const CAM_END = new THREE.Vector3(0, 0.6, 4.2)
+const LOOK_AT = new THREE.Vector3(0, 0, 0)
 
-function CinematicModel() {
-  const group = useRef<THREE.Group>(null)
+/* ─── Easing ───────────────────────────────────────────────────────────── */
+const clamp01 = (v: number) => Math.min(Math.max(v, 0), 1)
+const easeInOutCubic = (t: number) =>
+  t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+
+function CinematicModel({ progress }: { progress: ProgressRef }) {
+  const spin = useRef<THREE.Group>(null)
   const { scene } = useGLTF(MODEL_PATH)
   const { camera } = useThree()
-  const scrollP = useRef(0)
 
-  useEffect(() => {
-    camera.position.set(0, CAMERA_Y, CAM_Z_START)
-
-    const onScroll = () => {
-      // p: 0 at top → 1 after one full viewport of scroll (matches the 200vh driver)
-      scrollP.current = Math.min(window.scrollY / window.innerHeight, 1)
-    }
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [camera])
+  // Normalizeaza orice .glb: centreaza in origine + scaleaza la TARGET_SIZE.
+  const { offset, scale } = useMemo(() => {
+    const box = new THREE.Box3().setFromObject(scene)
+    const size = new THREE.Vector3()
+    const center = new THREE.Vector3()
+    box.getSize(size)
+    box.getCenter(center)
+    const maxDim = Math.max(size.x, size.y, size.z) || 1
+    return { offset: center.clone().multiplyScalar(-1), scale: TARGET_SIZE / maxDim }
+  }, [scene])
 
   useFrame(() => {
-    const p = scrollP.current
-    if (!group.current) return
+    const p = progress.current
 
-    // Phase 1 (0 → 0.65): rotate from profile to face camera
-    const rotT = easeInOut(Math.min(p / 0.65, 1))
-    const targetRot = START_ROT_Y * (1 - rotT)
-    group.current.rotation.y += (targetRot - group.current.rotation.y) * 0.1
+    // Rotatie condusa de scroll, lin (lerp spre tinta -> nu sare brusc)
+    if (spin.current) {
+      const rt = easeInOutCubic(clamp01(p / ROT_DONE_AT))
+      const targetRot = START_ROT_Y + (FRONT_ROT_Y - START_ROT_Y) * rt
+      spin.current.rotation.y += (targetRot - spin.current.rotation.y) * 0.12
+    }
 
-    // Phase 2 (0.55 → 0.90): zoom in
-    const zoomRaw = (p - 0.55) / 0.35
-    const targetZ =
-      CAM_Z_START + (CAM_Z_END - CAM_Z_START) * easeInOut(Math.min(Math.max(zoomRaw, 0), 1))
-    camera.position.z += (targetZ - camera.position.z) * 0.07
+    // Camera: dolly + zoom pe tot scroll-ul, lin
+    const ct = easeInOutCubic(clamp01(p))
+    const target = CAM_START.clone().lerp(CAM_END, ct)
+    camera.position.lerp(target, 0.1)
+    camera.lookAt(LOOK_AT)
   })
 
   return (
-    <group
-      ref={group}
-      rotation={[0, START_ROT_Y, 0]}
-      scale={MODEL_SCALE}
-      position={[0, MODEL_Y, 0]}
-    >
-      <primitive object={scene} />
-    </group>
+    <Float speed={1.3} rotationIntensity={0.12} floatIntensity={0.35}>
+      <group ref={spin} rotation={[0, START_ROT_Y, 0]}>
+        <group scale={scale}>
+          <primitive object={scene} position={offset.toArray()} />
+        </group>
+      </group>
+    </Float>
   )
 }
 
-export default function Model3D() {
+export default function Model3D({ progress }: { progress: ProgressRef }) {
   return (
     <Canvas
-      camera={{ position: [0, CAMERA_Y, CAM_Z_START], fov: FOV }}
+      camera={{ position: CAM_START.toArray(), fov: 42 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
     >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 8, 5]} intensity={1.2} castShadow />
-      <directionalLight position={[-5, 3, -5]} intensity={0.4} color="#10B981" />
+      {/* Lumini -> volum, reflexii, accent verde brand */}
+      <ambientLight intensity={0.55} />
+      <directionalLight position={[5, 8, 5]} intensity={1.3} castShadow />
+      <directionalLight position={[-6, 2, -4]} intensity={0.5} color="#10B981" />
+      <spotLight position={[0, 6, 2]} angle={0.5} penumbra={1} intensity={0.6} />
 
       <Suspense fallback={null}>
-        <CinematicModel />
+        <CinematicModel progress={progress} />
 
         <ContactShadows
-          position={[0, -1.4, 0]}
-          opacity={0.35}
+          position={[0, -TARGET_SIZE / 2 - 0.05, 0]}
+          opacity={0.4}
           scale={12}
-          blur={2.6}
+          blur={2.8}
           far={4}
           color="#000000"
         />

@@ -1,10 +1,6 @@
 import { Metadata } from "next"
 
-import FeaturedProducts from "@modules/home/components/featured-products"
 import Hero from "@modules/home/components/hero"
-import TrustBar from "@modules/home/components/trust-bar"
-import { listCollections } from "@lib/data/collections"
-import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
   title: "MENV Divers — Tot ce ai nevoie, într-un singur loc",
@@ -12,32 +8,7 @@ export const metadata: Metadata = {
     "Mii de produse din toate categoriile. Comandă online cu livrare rapidă în toată țara.",
 }
 
-export default async function Home(props: {
-  params: Promise<{ countryCode: string }>
-}) {
-  const params = await props.params
-
-  const { countryCode } = params
-
-  const region = await getRegion(countryCode)
-
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
-
-  if (!collections || !region) {
-    return null
-  }
-
-  return (
-    <>
-      <Hero />
-      <TrustBar />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div>
-    </>
-  )
+// Home = doar scena cinematica. Produsele se vad in /store.
+export default function Home() {
+  return <Hero />
 }

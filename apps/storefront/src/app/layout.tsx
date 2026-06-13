@@ -34,7 +34,11 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const locale = await getLocale()
 
   return (
-    <html lang={locale} className={`${inter.variable} ${jakartaSans.variable}`}>
+    <html
+      lang={locale}
+      className={`${inter.variable} ${jakartaSans.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
