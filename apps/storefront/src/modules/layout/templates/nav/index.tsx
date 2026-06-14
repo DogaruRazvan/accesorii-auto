@@ -1,11 +1,13 @@
 import { Suspense } from "react"
 import Image from "next/image"
 import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
+import { listCategories } from "@lib/data/categories"
+import { HttpTypes, StoreRegion } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import MobileMenu from "@modules/layout/components/side-menu"
 import NavSearchBar from "@modules/layout/components/nav-search"
+import StoreMenu from "@modules/layout/components/store-menu"
 import ThemeToggle from "@modules/layout/components/theme-toggle"
 import LanguageToggle from "@modules/layout/components/language-toggle"
 import { navIconButton } from "@modules/layout/components/nav-icon/style"
@@ -13,6 +15,10 @@ import { getT } from "@lib/i18n/server"
 
 export default async function Nav() {
   const regions = await listRegions().then((regions: StoreRegion[]) => regions)
+  const categories = await listCategories().catch(
+    () => [] as HttpTypes.StoreProductCategory[]
+  )
+  const topCategories = (categories || []).filter((c) => !c.parent_category)
   const t = await getT()
 
   return (
@@ -43,8 +49,12 @@ export default async function Nav() {
                 <span className="font-medium text-content/50">Divers</span>
               </span>
             </LocalizedClientLink>
-            <div className="hidden small:flex items-center gap-x-8 text-sm font-medium text-content/70">
-              <NavLink href="/store">{t("nav.store")}</NavLink>
+            <div className="hidden small:flex items-center gap-x-2 text-sm font-medium">
+              <StoreMenu
+                label={t("nav.store")}
+                allLabel={t("common.allProducts")}
+                categories={topCategories}
+              />
             </div>
           </div>
 
@@ -87,18 +97,6 @@ export default async function Nav() {
         </nav>
       </header>
     </div>
-  )
-}
-
-/* Desktop link ca pill discret — capata suprafata si accent verde la hover */
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <LocalizedClientLink
-      href={href}
-      className="px-3.5 py-2 rounded-full text-content/70 hover:text-cta hover:bg-cta/10 transition-all duration-200"
-    >
-      {children}
-    </LocalizedClientLink>
   )
 }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import Model3D from "./model-3d"
+import HomeSearch from "./home-search"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 interface HeroSceneProps {
@@ -160,6 +161,14 @@ export default function HeroScene({
           >
             {subtitle}
           </p>
+
+          {/* Search cu autocompletare — pointer-events-auto (parintele e none) */}
+          <div
+            className="mt-7 w-full max-w-md pointer-events-auto animate-hero-rise"
+            style={{ animationDelay: "0.55s" }}
+          >
+            <HomeSearch />
+          </div>
         </div>
 
         {/* Indicator scroll — invita la derulare, dispare cand animatia se termina */}
