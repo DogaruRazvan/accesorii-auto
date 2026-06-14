@@ -9,6 +9,7 @@ import {
 } from "@medusajs/framework/types"
 import { Resend } from "resend"
 import { orderPlacedEmail } from "./templates/order-placed"
+import { orderPlacedAdminEmail } from "./templates/order-placed-admin"
 
 type Options = {
   api_key: string
@@ -25,6 +26,7 @@ const TEMPLATES: Record<
   (data: any) => { subject: string; html: string }
 > = {
   "order-placed": orderPlacedEmail,
+  "order-placed-admin": orderPlacedAdminEmail,
 }
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {

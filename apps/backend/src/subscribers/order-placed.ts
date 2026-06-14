@@ -66,6 +66,27 @@ export default async function orderPlacedHandler({
     })
 
     logger.info(`order.placed: email de confirmare trimis către ${order.email}`)
+
+    // Notificare către proprietarul magazinului (daca e setat STORE_OWNER_EMAIL)
+    const ownerEmail = process.env.STORE_OWNER_EMAIL
+    if (ownerEmail) {
+      await notification.createNotifications({
+        to: ownerEmail,
+        channel: "email",
+        template: "order-placed-admin",
+        data: {
+          display_id: order.display_id,
+          customer_name,
+          customer_email: order.email,
+          customer_phone: addr?.phone,
+          currency_code: order.currency_code,
+          items: order.items,
+          total: order.total,
+          shipping_address: addr,
+        },
+      })
+      logger.info(`order.placed: notificare comandă nouă trimisă către ${ownerEmail}`)
+    }
   } catch (e: any) {
     logger.error(`order.placed: eroare la trimiterea emailului — ${e?.message}`)
   }

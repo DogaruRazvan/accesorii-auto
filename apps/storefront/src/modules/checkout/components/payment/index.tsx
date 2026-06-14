@@ -124,7 +124,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          Plată
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
         {!isOpen && paymentReady && (
@@ -134,7 +134,7 @@ const Payment = ({
               className="text-cta hover:text-cta-hover"
               data-testid="edit-payment-button"
             >
-              Edit
+              Modifică
             </button>
           </Text>
         )}
@@ -174,13 +174,13 @@ const Payment = ({
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-content mb-1">
-                Payment method
+                Metodă de plată
               </Text>
               <Text
                 className="txt-medium text-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Card cadou
               </Text>
             </div>
           )}
@@ -202,8 +202,8 @@ const Payment = ({
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeLike(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
+              ? " Introdu datele cardului"
+              : "Continuă spre finalizare"}
           </Button>
         </div>
 
@@ -212,7 +212,7 @@ const Payment = ({
             <div className="flex items-start gap-x-1 w-full">
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-content mb-1">
-                  Payment method
+                  Metodă de plată
                 </Text>
                 <Text
                   className="txt-medium text-subtle"
@@ -224,7 +224,7 @@ const Payment = ({
               </div>
               <div className="flex flex-col w-1/3">
                 <Text className="txt-medium-plus text-content mb-1">
-                  Payment details
+                  Detalii plată
                 </Text>
                 <div
                   className="flex gap-2 txt-medium text-subtle items-center"
@@ -238,7 +238,7 @@ const Payment = ({
                   <Text>
                     {isStripeLike(selectedPaymentMethod) && cardBrand
                       ? cardBrand
-                      : "Another step will appear"}
+                      : "Va apărea un pas suplimentar"}
                   </Text>
                 </div>
               </div>
@@ -246,13 +246,13 @@ const Payment = ({
           ) : paidByGiftcard ? (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-content mb-1">
-                Payment method
+                Metodă de plată
               </Text>
               <Text
                 className="txt-medium text-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Card cadou
               </Text>
             </div>
           ) : null}
