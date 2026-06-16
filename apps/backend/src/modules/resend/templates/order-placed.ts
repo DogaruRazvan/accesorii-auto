@@ -34,8 +34,20 @@ const BRAND = "MENV Divers"
 const ACCENT = "#059669"
 
 function money(amount: unknown, currency: string | undefined) {
-  // Totalurile Medusa pot veni ca BigNumberValue (number sau string) -> coercem.
-  const value = Number(amount)
+  // Medusa v2 returns totals as BigNumber objects serialized to { value: string, precision: number }
+  let value: number
+  if (amount == null) {
+    value = 0
+  } else if (typeof amount === "number") {
+    value = amount
+  } else if (typeof amount === "string") {
+    value = parseFloat(amount)
+  } else if (typeof amount === "object") {
+    const o = amount as Record<string, unknown>
+    value = parseFloat(String(o.value ?? o.raw ?? 0))
+  } else {
+    value = 0
+  }
   const safe = Number.isFinite(value) ? value : 0
   const code = (currency || "RON").toUpperCase()
   try {
