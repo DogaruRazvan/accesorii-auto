@@ -48,20 +48,11 @@ export default async function freeShippingOver500({ container }: ExecArgs) {
 
     const prices = option.prices || []
 
-    // Prețurile de bază = cele FĂRĂ reguli (prețul normal pe monedă).
+    // Prețurile de bază = cele FĂRĂ reguli (prețul normal pe monedă). Orice preț
+    // cu regulă item_total (ex. un prag vechi de 200) îl înlocuim cu 500.
     const basePrices = prices.filter(
       (p: any) => !(p.price_rules || []).length
     )
-
-    // Avem deja regula item_total pe vreun preț? -> idempotent, sărim.
-    const alreadyHasRule = prices.some((p: any) =>
-      (p.price_rules || []).some((r: any) => r.attribute === "item_total")
-    )
-
-    if (alreadyHasRule) {
-      logger.info(`"${option.name}": regula item_total există deja — sar peste.`)
-      continue
-    }
 
     if (!basePrices.length) {
       logger.warn(`"${option.name}": nu are preț de bază — sar peste.`)
