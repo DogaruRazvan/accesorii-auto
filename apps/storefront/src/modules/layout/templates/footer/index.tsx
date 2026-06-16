@@ -4,6 +4,7 @@ import { clx } from "@modules/common/components/ui";
 import Image from "next/image";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
+import AnpcBadges from "@modules/content/components/anpc-badges";
 import { getT } from "@lib/i18n/server";
 
 export default async function Footer() {
@@ -162,6 +163,9 @@ export default async function Footer() {
               </ul>
             </div>
           </div>
+        </div>
+        <div className="w-full py-8 border-t border-line">
+          <AnpcBadges />
         </div>
         <div className="flex flex-col gap-2 small:flex-row w-full py-8 border-t border-line justify-between text-subtle">
           <p className="text-xs">
