@@ -95,7 +95,7 @@ export function orderPlacedEmail(data: OrderPlacedData): {
           ${esc(it.title)} ${it.quantity ? `<span style="color:#888;">× ${it.quantity}</span>` : ""}
         </td>
         <td style="padding:12px 0;border-bottom:1px solid #eee;color:#111;font-size:14px;text-align:right;white-space:nowrap;">
-          ${money(it.total ?? (it.unit_price || 0) * (it.quantity || 1), cur)}
+          ${money(it.total || (it.unit_price || 0) * (it.quantity || 1), cur)}
         </td>
       </tr>`
     )
