@@ -32,11 +32,17 @@
 
 html {
   background-color: rgb(var(--c-page));
+  /* Taie orice depășire pe orizontală -> pe telefon nu mai e nevoie de zoom out.
+     `clip` (nu `hidden`) ca să nu strice nav-ul `sticky`. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 body {
   background-color: rgb(var(--c-page));
   color: rgb(var(--c-text));
+  overflow-x: clip;
+  max-width: 100%;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 

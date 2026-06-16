@@ -1,5 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
-import { Metadata } from "next"
+import { Metadata, Viewport } from "next"
 import { Inter, Plus_Jakarta_Sans } from "next/font/google"
 import { LocaleProvider } from "@lib/i18n/context"
 import { getLocale } from "@lib/i18n/server"
@@ -24,6 +24,13 @@ export const metadata: Metadata = {
     shortcut: "/logo.png",
     apple: "/logo.png",
   },
+}
+
+// Viewport corect pe telefon: lățime = ecranul, fără zoom forțat.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 }
 
 // Ruleaza inainte de paint ca sa nu apara flash de tema gresita.

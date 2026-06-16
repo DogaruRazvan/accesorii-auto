@@ -13,6 +13,11 @@ import { Button, clx } from "@modules/common/components/ui"
 import { useState } from "react"
 import { StoreFreeShippingPrice } from "types/global"
 
+// Pragul afișat pentru livrare gratuită. Suprascrie valoarea din regula de
+// backend DOAR la afișare (nudge-ul din coș). Regula reală de livrare gratuită
+// rămâne cea din backend — schimb-o acolo când vrei ca pragul să fie identic.
+const FREE_SHIPPING_TARGET = 500
+
 const computeTarget = (
   cart: HttpTypes.StoreCart,
   price: HttpTypes.StorePrice
@@ -22,7 +27,7 @@ const computeTarget = (
   )!
 
   const currentAmount = cart.item_total
-  const targetAmount = parseFloat(priceRule.value)
+  const targetAmount = FREE_SHIPPING_TARGET
 
   if (priceRule.operator === "gt") {
     return {
