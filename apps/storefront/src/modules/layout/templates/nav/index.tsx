@@ -27,13 +27,13 @@ export default async function Nav() {
         <nav className="content-container flex items-center justify-between w-full h-full gap-x-4">
 
           {/* Left: hamburger (mobile) + logo + desktop links */}
-          <div className="flex items-center gap-x-6 shrink-0">
+          <div className="flex items-center gap-x-2 small:gap-x-6 min-w-0 shrink">
             <div className="small:hidden">
               <MobileMenu regions={regions} />
             </div>
             <LocalizedClientLink
               href="/"
-              className="flex items-center gap-2.5 transition-transform duration-200 hover:scale-[1.03]"
+              className="flex items-center gap-1.5 small:gap-2.5 transition-transform duration-200 hover:scale-[1.03] min-w-0"
               data-testid="nav-store-link"
             >
               <Image
@@ -42,9 +42,11 @@ export default async function Nav() {
                 width={160}
                 height={158}
                 priority
-                className="h-14 w-auto object-contain"
+                className="h-10 small:h-14 w-auto object-contain shrink-0"
               />
-              <span className="font-display text-lg small:text-xl font-bold tracking-tight text-content leading-none whitespace-nowrap">
+              {/* Textul brandului dispare pe ecrane foarte inguste (ex. Fold) ca
+                  sa ramana loc pentru cos. Logo-ul ramane mereu. */}
+              <span className="hidden min-[400px]:inline-block font-display text-base small:text-xl font-bold tracking-tight text-content leading-none whitespace-nowrap">
                 MENV{" "}
                 <span className="font-medium text-content/50">Divers</span>
               </span>
@@ -64,7 +66,7 @@ export default async function Nav() {
           </Suspense>
 
           {/* Right: language + theme toggle + account + cart */}
-          <div className="flex items-center gap-x-2.5 small:gap-x-3 shrink-0">
+          <div className="flex items-center gap-x-1.5 small:gap-x-3 shrink-0">
             <LanguageToggle />
             <ThemeToggle />
             <LocalizedClientLink
