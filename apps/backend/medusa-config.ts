@@ -18,6 +18,9 @@ if (process.env.STRIPE_API_KEY) {
           options: {
             apiKey: process.env.STRIPE_API_KEY,
             webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+            // Captureaza automat plata la autorizare (altfel ramane "Uncaptured"
+            // pe Stripe si banii nu se incaseaza efectiv de pe card).
+            capture: true,
           },
         },
       ],
