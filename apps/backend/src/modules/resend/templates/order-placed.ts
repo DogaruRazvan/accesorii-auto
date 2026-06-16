@@ -33,22 +33,33 @@ export type OrderPlacedData = {
 const BRAND = "MENV Divers"
 const ACCENT = "#059669"
 
-function money(amount: unknown, currency: string | undefined) {
-  // Medusa v2 returns totals as BigNumber objects serialized to { value: string, precision: number }
-  let value: number
-  if (amount == null) {
-    value = 0
-  } else if (typeof amount === "number") {
-    value = amount
-  } else if (typeof amount === "string") {
-    value = parseFloat(amount)
-  } else if (typeof amount === "object") {
-    const o = amount as Record<string, unknown>
-    value = parseFloat(String(o.value ?? o.raw ?? 0))
-  } else {
-    value = 0
+// Medusa v2 totalurile sunt BigNumber. In functie de unde le iei pot ajunge ca:
+// number, numeric string, BigNumber instance (valueOf/numeric), sau POJO raw
+// { value, precision } / { raw_: { value } }. Extragem robust din toate.
+function toNumber(amount: unknown): number {
+  if (amount == null) return 0
+  if (typeof amount === "number") return Number.isFinite(amount) ? amount : 0
+  if (typeof amount === "string") {
+    const n = parseFloat(amount)
+    return Number.isFinite(n) ? n : 0
   }
-  const safe = Number.isFinite(value) ? value : 0
+  if (typeof amount === "object") {
+    const o = amount as Record<string, any>
+    // ordine: numeric (getter Medusa) -> value raw -> raw_.value -> raw.value -> valueOf()
+    const candidate =
+      o.numeric ??
+      o.value ??
+      o.raw_?.value ??
+      o.raw?.value ??
+      (typeof o.valueOf === "function" ? o.valueOf() : undefined)
+    const n = parseFloat(String(candidate))
+    return Number.isFinite(n) ? n : 0
+  }
+  return 0
+}
+
+function money(amount: unknown, currency: string | undefined) {
+  const safe = toNumber(amount)
   const code = (currency || "RON").toUpperCase()
   try {
     return new Intl.NumberFormat("ro-RO", {

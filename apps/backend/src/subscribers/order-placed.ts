@@ -49,6 +49,12 @@ export default async function orderPlacedHandler({
       ? [addr.first_name, addr.last_name].filter(Boolean).join(" ")
       : ""
 
+    // DEBUG temporar: vrem sa vedem forma exacta a totalurilor (BigNumber?).
+    // De sters dupa ce confirmam ca emailul arata suma corecta.
+    logger.info(
+      `order.placed DEBUG totals: total=${JSON.stringify(order.total)} subtotal=${JSON.stringify(order.subtotal)} item0total=${JSON.stringify(order.items?.[0]?.total)}`
+    )
+
     await notification.createNotifications({
       to: order.email,
       channel: "email",

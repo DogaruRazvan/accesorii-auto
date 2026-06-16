@@ -26,9 +26,31 @@ export type OrderPlacedAdminData = {
 
 const ACCENT = "#059669"
 
+// Vezi order-placed.ts: BigNumber Medusa poate ajunge ca number / string /
+// instance / POJO raw. Extragem robust din toate formele.
+function toNumber(amount: unknown): number {
+  if (amount == null) return 0
+  if (typeof amount === "number") return Number.isFinite(amount) ? amount : 0
+  if (typeof amount === "string") {
+    const n = parseFloat(amount)
+    return Number.isFinite(n) ? n : 0
+  }
+  if (typeof amount === "object") {
+    const o = amount as Record<string, any>
+    const candidate =
+      o.numeric ??
+      o.value ??
+      o.raw_?.value ??
+      o.raw?.value ??
+      (typeof o.valueOf === "function" ? o.valueOf() : undefined)
+    const n = parseFloat(String(candidate))
+    return Number.isFinite(n) ? n : 0
+  }
+  return 0
+}
+
 function money(amount: unknown, currency: string | undefined) {
-  const value = Number(amount)
-  const safe = Number.isFinite(value) ? value : 0
+  const safe = toNumber(amount)
   const code = (currency || "RON").toUpperCase()
   try {
     return new Intl.NumberFormat("ro-RO", { style: "currency", currency: code }).format(safe)
