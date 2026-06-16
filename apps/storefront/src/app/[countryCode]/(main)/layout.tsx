@@ -9,6 +9,7 @@ import Footer from "@modules/layout/templates/footer"
 import FooterGate from "@modules/layout/templates/footer/footer-gate"
 import Nav from "@modules/layout/templates/nav"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
+import CookieBanner from "@modules/content/components/cookie-banner"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -43,6 +44,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <FooterGate>
         <Footer />
       </FooterGate>
+      <CookieBanner />
     </>
   )
 }
