@@ -186,10 +186,12 @@ export default function HeroScene({
         </div>
 
         {/* ─── Final: ecran blurat + continut modern ─────────────────────── */}
+        {/* `fixed inset-0` -> acopera tot viewport-ul (inclusiv nav-ul), deci
+            blureaza TOATA pagina din spate, nu doar zona modelului. */}
         <div
-          className={`absolute inset-0 z-50 flex flex-col items-center justify-center px-6 transition-opacity duration-700 ${
+          className={`fixed inset-0 z-[60] flex flex-col items-center justify-center px-6 transition-opacity duration-700 ${
             done
-              ? "opacity-100 backdrop-blur-xl bg-black/45"
+              ? "opacity-100 backdrop-blur-2xl bg-black/50"
               : "opacity-0 pointer-events-none"
           }`}
         >
