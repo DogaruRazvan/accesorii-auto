@@ -18,10 +18,6 @@ const GRADIENTS: string[] = [
   "linear-gradient(135deg,#134E4A,#1FA2A6)", // cyan-teal
 ]
 
-function isWide(i: number) {
-  return i === 0 || i % 7 === 5
-}
-
 export default async function StoreLanding({ countryCode }: { countryCode: string }) {
   const t = await getT()
   const region = await getRegion(countryCode)
@@ -42,88 +38,83 @@ export default async function StoreLanding({ countryCode }: { countryCode: strin
     <div className="w-full bg-page min-h-screen">
 
       {/* ── CATEGORII ─────────────────────────────────── */}
-      <section className="content-container pt-6 pb-0 small:pt-8">
+      <section className="content-container pt-6 pb-0 small:pt-10">
         {topCategories.length > 0 ? (
-          <div className="grid grid-cols-2 medium:grid-cols-3 gap-3 small:gap-4">
-            {topCategories.map((cat, i) => {
-              const gradient = GRADIENTS[i % GRADIENTS.length]
-              const wide = isWide(i)
-              const isFirst = i === 0
-              const imageUrl = (cat.metadata as Record<string, unknown> | null)?.image as string | undefined
-              const hasImage = !!imageUrl
+          <>
+            <div className="grid grid-cols-2 small:grid-cols-3 large:grid-cols-4 gap-3 small:gap-4">
+              {topCategories.map((cat, i) => {
+                const gradient = GRADIENTS[i % GRADIENTS.length]
+                const imageUrl = (cat.metadata as Record<string, unknown> | null)?.image as string | undefined
+                const hasImage = !!imageUrl
 
-              return (
-                <LocalizedClientLink
-                  key={cat.id}
-                  href={`/categories/${cat.handle}`}
-                  style={hasImage ? {} : { backgroundImage: gradient }}
-                  className={[
-                    "group relative overflow-hidden rounded-3xl select-none cursor-pointer text-white",
-                    "shadow-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-1",
-                    "ring-1 ring-black/5",
-                    wide ? "col-span-2 medium:col-span-2" : "",
-                    isFirst
-                      ? "h-[260px] small:h-[400px]"
-                      : wide
-                      ? "h-[170px] small:h-[230px]"
-                      : "h-[170px] small:h-[220px]",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  {/* Imagine de fundal */}
-                  {hasImage && (
-                    <Image
-                      src={imageUrl}
-                      alt={cat.name}
-                      fill
-                      className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-110"
-                      sizes={wide ? "(max-width:768px) 100vw, 66vw" : "(max-width:768px) 50vw, 33vw"}
-                    />
-                  )}
+                return (
+                  <LocalizedClientLink
+                    key={cat.id}
+                    href={`/categories/${cat.handle}`}
+                    style={hasImage ? {} : { backgroundImage: gradient }}
+                    className="group relative overflow-hidden rounded-2xl select-none cursor-pointer text-white h-36 small:h-44 ring-1 ring-black/5 dark:ring-white/10 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                  >
+                    {/* Imagine de fundal */}
+                    {hasImage && (
+                      <Image
+                        src={imageUrl}
+                        alt={cat.name}
+                        fill
+                        className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        sizes="(max-width:1024px) 50vw, 25vw"
+                      />
+                    )}
 
-                  {/* Overlay lizibilitate (mereu) + luminare la hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent transition-opacity duration-500" />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_70%_20%,rgba(255,255,255,0.18),transparent_55%)]" />
+                    {/* Overlay lizibilitate */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
 
-                  {/* Initiala mare, decorativa (doar fara imagine) */}
-                  {!hasImage && (
-                    <span
-                      className="absolute -bottom-6 -right-3 font-black leading-none pointer-events-none select-none text-white/10"
-                      style={{ fontSize: isFirst ? "clamp(140px,20vw,240px)" : "clamp(90px,14vw,150px)" }}
-                    >
-                      {cat.name.charAt(0).toUpperCase()}
+                    {/* Initiala mare, decorativa (doar fara imagine) */}
+                    {!hasImage && (
+                      <span
+                        className="absolute -bottom-5 -right-2 font-black leading-none pointer-events-none select-none text-white/10"
+                        style={{ fontSize: "clamp(80px,12vw,120px)" }}
+                      >
+                        {cat.name.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+
+                    {/* Sageata glass, se umple la hover */}
+                    <span className="absolute top-3 right-3 flex items-center justify-center w-8 h-8 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/25 transition-all duration-300 group-hover:bg-cta group-hover:ring-cta">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                        <line x1="7" y1="17" x2="17" y2="7" />
+                        <polyline points="7 7 17 7 17 17" />
+                      </svg>
                     </span>
-                  )}
 
-                  {/* Sageata glass, mereu vizibila, se umple la hover */}
-                  <span className="absolute top-4 right-4 small:top-5 small:right-5 flex items-center justify-center w-9 h-9 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/25 transition-all duration-300 group-hover:bg-cta group-hover:ring-cta">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                      <line x1="7" y1="17" x2="17" y2="7" />
-                      <polyline points="7 7 17 7 17 17" />
-                    </svg>
-                  </span>
-
-                  {/* Content jos */}
-                  <div className="absolute inset-0 p-5 small:p-7 flex flex-col justify-end gap-1.5">
-                    <h2
-                      className={[
-                        "font-bold tracking-tight leading-tight text-white drop-shadow-sm transition-transform duration-300 group-hover:translate-x-1",
-                        isFirst ? "text-3xl small:text-[2.75rem]" : "text-xl small:text-2xl",
-                      ].join(" ")}
-                    >
-                      {cat.name}
-                    </h2>
-                    <div className="flex items-center gap-1.5 text-[11px] font-semibold tracking-[0.18em] uppercase text-white/80 transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0">
-                      <span>{t("landing.explore")}</span>
+                    {/* Nume jos */}
+                    <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                      <h2 className="font-semibold text-base small:text-lg tracking-tight leading-tight text-white drop-shadow-sm transition-transform duration-300 group-hover:translate-x-0.5">
+                        {cat.name}
+                      </h2>
                     </div>
-                  </div>
-                </LocalizedClientLink>
-              )
-            })}
-          </div>
+                  </LocalizedClientLink>
+                )
+              })}
+            </div>
+
+            {/* Buton: toate produsele — stilizat cu paleta brand */}
+            <div className="mt-7 small:mt-9 flex justify-center">
+              <LocalizedClientLink
+                href="/store?view=all"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-cta hover:bg-cta-hover text-white pl-7 pr-5 py-3.5 text-sm font-semibold shadow-lg shadow-cta/25 transition-all duration-300 hover:scale-[1.03] active:scale-95"
+              >
+                {t("common.allProducts")}
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 transition-transform duration-300 group-hover:translate-x-0.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </LocalizedClientLink>
+            </div>
+          </>
         ) : (
-          <div className="rounded-3xl border-2 border-dashed border-line py-20 text-center text-sm text-subtle">
+          <div className="rounded-2xl border-2 border-dashed border-line py-20 text-center text-sm text-subtle">
             {t("landing.emptyCategories")}
           </div>
         )}

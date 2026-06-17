@@ -128,7 +128,7 @@ const ro: Messages = {
 
   // Landing magazin
   "landing.explore": "Explorează",
-  "landing.inStore": "În magazin acum",
+  "landing.inStore": "Recomandate",
   "landing.emptyCategories": "Adaugă categorii din panoul de admin.",
 
   // Cod promoțional
@@ -259,7 +259,7 @@ const en: Messages = {
 
   // Store landing
   "landing.explore": "Explore",
-  "landing.inStore": "In store now",
+  "landing.inStore": "Recommended",
   "landing.emptyCategories": "Add categories from the admin panel.",
 
   // Discount code
