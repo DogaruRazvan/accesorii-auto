@@ -122,6 +122,14 @@ export default async function Footer() {
               <ul className="grid grid-cols-1 gap-y-2 text-subtle txt-small">
                 <li>
                   <LocalizedClientLink
+                    href="/content/contact"
+                    className="hover:text-content"
+                  >
+                    {t("footer.contact")}
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
                     href="/content/termeni-si-conditii"
                     className="hover:text-content"
                   >
