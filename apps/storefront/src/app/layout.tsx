@@ -19,11 +19,9 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
-  icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
-  },
+  // Iconitele vin din conventia de fisiere Next: src/app/icon.png,
+  // apple-icon.png, favicon.ico (generate din logo). Nu mai e nevoie de
+  // configurare manuala aici.
 }
 
 // Viewport corect pe telefon: lățime = ecranul, fără zoom forțat.
