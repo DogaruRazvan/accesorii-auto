@@ -20,10 +20,11 @@ jobs:
             exit 1
           fi
           TS=$(date +%Y-%m-%d_%H%M)
-          # Folosim imaginea oficiala postgres:17 ca pg_dump sa fie compatibil cu
-          # orice versiune de server (<=17). Formatul -Fc = comprimat, restaurabil
-          # cu pg_restore.
-          docker run --rm -e DATABASE_URL -v "$PWD:/backup" postgres:17 \
+          # Imaginea trebuie sa aiba pg_dump >= versiunea serverului. Railway
+          # ruleaza acum Postgres 18 -> folosim postgres:18. Daca vreodata Railway
+          # urca versiunea (ex. 19), schimba numarul aici. -Fc = comprimat,
+          # restaurabil cu pg_restore.
+          docker run --rm -e DATABASE_URL -v "$PWD:/backup" postgres:18 \
             sh -c 'pg_dump "$DATABASE_URL" --no-owner --no-privileges -Fc -f "/backup/db_'"$TS"'.dump"'
           ls -lh db_*.dump
           echo "BACKUP_FILE=db_${TS}.dump" >> "$GITHUB_ENV"
