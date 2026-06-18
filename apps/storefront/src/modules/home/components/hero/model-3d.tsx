@@ -8,7 +8,7 @@ import { useGLTF, Environment, ContactShadows, Float } from "@react-three/drei"
 import * as THREE from "three"
 
 const MODEL_PATH =
-  process.env.NEXT_PUBLIC_HERO_MODEL || "/models/base_basic_pbr.glb"
+  process.env.NEXT_PUBLIC_HERO_MODEL || "/models/car_house.glb"
 
 /* ─── Reglaje (modifica aici daca vrei alt look) ───────────────────────── */
 const TARGET_SIZE = 3.1         // inaltimea modelului in unitati (auto-scalat)
