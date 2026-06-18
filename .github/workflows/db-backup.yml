@@ -1,0 +1,36 @@
+name: Backup baza de date
+
+# Ruleaza automat la fiecare 2 zile (si manual din tab-ul Actions).
+on:
+  schedule:
+    - cron: "0 2 */2 * *" # 02:00 UTC, o data la 2 zile
+  workflow_dispatch: {} # buton de rulare manuala
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: pg_dump -> fisier
+        env:
+          # Conexiunea PUBLICA la Postgres (din Railway), pusa ca secret GitHub.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "Lipseste secretul DATABASE_URL. Adauga-l in Settings > Secrets > Actions."
+            exit 1
+          fi
+          TS=$(date +%Y-%m-%d_%H%M)
+          # Folosim imaginea oficiala postgres:17 ca pg_dump sa fie compatibil cu
+          # orice versiune de server (<=17). Formatul -Fc = comprimat, restaurabil
+          # cu pg_restore.
+          docker run --rm -e DATABASE_URL -v "$PWD:/backup" postgres:17 \
+            sh -c 'pg_dump "$DATABASE_URL" --no-owner --no-privileges -Fc -f "/backup/db_'"$TS"'.dump"'
+          ls -lh db_*.dump
+          echo "BACKUP_FILE=db_${TS}.dump" >> "$GITHUB_ENV"
+
+      - name: Urca backup-ul ca artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_number }}
+          path: ${{ env.BACKUP_FILE }}
+          retention-days: 90
