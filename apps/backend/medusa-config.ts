@@ -7,6 +7,9 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 // STRIPE_API_KEY, ca backend-ul sa nu crape cand cheia nu e inca setata.
 const modules: any[] = []
 
+// Recenzii produse (modul custom, mereu activ).
+modules.push({ resolve: "./src/modules/product-review" })
+
 if (process.env.STRIPE_API_KEY) {
   modules.push({
     resolve: "@medusajs/medusa/payment",

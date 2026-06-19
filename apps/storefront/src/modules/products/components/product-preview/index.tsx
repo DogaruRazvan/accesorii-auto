@@ -1,6 +1,8 @@
 import { getProductPrice } from "@lib/util/get-product-price"
+import { getProductReviewStats } from "@lib/data/reviews"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import StarRating from "@modules/products/components/star-rating"
 import Thumbnail from "../thumbnail"
 import PreviewPrice from "./price"
 
@@ -16,6 +18,10 @@ export default async function ProductPreview({
   const { cheapestPrice } = getProductPrice({
     product,
   })
+
+  // Statistici recenzii (medie + numar). Apar pe card doar daca exista cel
+  // putin o recenzie.
+  const { average, count } = await getProductReviewStats(product.id)
 
   return (
     <LocalizedClientLink
@@ -51,6 +57,11 @@ export default async function ProductPreview({
             </div>
           )}
         </div>
+        {count > 0 && (
+          <div className="mt-1.5">
+            <StarRating value={average} count={count} size="sm" />
+          </div>
+        )}
       </div>
     </LocalizedClientLink>
   )

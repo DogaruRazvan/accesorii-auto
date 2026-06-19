@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import ProductRatingBadge from "@modules/products/components/reviews/rating-badge"
 
 type ProductInfoProps = {
   product: HttpTypes.StoreProduct
@@ -23,6 +24,8 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         >
           {product.title}
         </h1>
+
+        <ProductRatingBadge productId={product.id} />
 
         {product.description && (
           <p
