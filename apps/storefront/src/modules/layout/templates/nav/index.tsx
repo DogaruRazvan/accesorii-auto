@@ -57,6 +57,12 @@ export default async function Nav() {
                 allLabel={t("common.allProducts")}
                 categories={topCategories}
               />
+              <LocalizedClientLink
+                href="/content/faq"
+                className="inline-flex items-center px-3.5 py-2 rounded-full text-content/70 hover:text-cta hover:bg-cta/10 transition-all duration-200"
+              >
+                {t("nav.faq")}
+              </LocalizedClientLink>
             </div>
           </div>
 

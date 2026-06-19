@@ -11,6 +11,7 @@ type Messages = Record<string, string>
 const ro: Messages = {
   // Nav
   "nav.store": "Magazin",
+  "nav.faq": "Întrebări frecvente",
   "nav.account": "Contul meu",
   "nav.cart": "Coș",
   "nav.searchPlaceholder": "Caută produse...",
@@ -22,6 +23,7 @@ const ro: Messages = {
   "menu.home": "Acasă",
   "menu.store": "Magazin",
   "menu.categories": "Categorii",
+  "menu.faq": "Întrebări frecvente",
   "menu.account": "Contul meu",
   "menu.cart": "Coș",
 
@@ -48,6 +50,7 @@ const ro: Messages = {
   "footer.collections": "Colecții",
   "footer.info": "Informații",
   "footer.contact": "Contact",
+  "footer.faq": "Întrebări frecvente",
   "footer.terms": "Termeni și condiții",
   "footer.privacy": "Confidențialitate (GDPR)",
   "footer.returns": "Politică de retur",
@@ -143,6 +146,7 @@ const ro: Messages = {
 const en: Messages = {
   // Nav
   "nav.store": "Shop",
+  "nav.faq": "FAQ",
   "nav.account": "My account",
   "nav.cart": "Cart",
   "nav.searchPlaceholder": "Search products...",
@@ -154,6 +158,7 @@ const en: Messages = {
   "menu.home": "Home",
   "menu.store": "Shop",
   "menu.categories": "Categories",
+  "menu.faq": "FAQ",
   "menu.account": "My account",
   "menu.cart": "Cart",
 
@@ -180,6 +185,7 @@ const en: Messages = {
   "footer.collections": "Collections",
   "footer.info": "Information",
   "footer.contact": "Contact",
+  "footer.faq": "FAQ",
   "footer.terms": "Terms & conditions",
   "footer.privacy": "Privacy (GDPR)",
   "footer.returns": "Return policy",

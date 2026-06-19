@@ -73,6 +73,7 @@ const MobileMenu = ({ regions }: SideMenuProps) => {
             { label: t("menu.home"), href: "/" },
             { label: t("menu.store"), href: "/store" },
             { label: t("menu.categories"), href: "/store" },
+            { label: t("menu.faq"), href: "/content/faq" },
             { label: t("menu.account"), href: "/account" },
             { label: t("menu.cart"), href: "/cart" },
           ].map(({ label, href }) => (

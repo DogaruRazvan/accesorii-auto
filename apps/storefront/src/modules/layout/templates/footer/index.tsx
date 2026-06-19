@@ -130,6 +130,14 @@ export default async function Footer() {
                 </li>
                 <li>
                   <LocalizedClientLink
+                    href="/content/faq"
+                    className="hover:text-content"
+                  >
+                    {t("footer.faq")}
+                  </LocalizedClientLink>
+                </li>
+                <li>
+                  <LocalizedClientLink
                     href="/content/termeni-si-conditii"
                     className="hover:text-content"
                   >
