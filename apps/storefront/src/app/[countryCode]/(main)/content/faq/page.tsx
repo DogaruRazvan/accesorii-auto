@@ -30,10 +30,6 @@ const SECTIONS: Section[] = [
         q: "Livrați și în afara României?",
         a: "Momentan livrăm exclusiv pe teritoriul României.",
       },
-      {
-        q: "Pot ridica personal comanda?",
-        a: "Da. Avem magazin fizic pe Strada Traian nr. 19, oraș Hârșova, județ Constanța. Te așteptăm Luni–Vineri, între 10:00 și 18:00.",
-      },
     ],
   },
   {
