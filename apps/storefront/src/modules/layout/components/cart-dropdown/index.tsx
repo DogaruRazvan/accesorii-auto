@@ -17,13 +17,12 @@ import Thumbnail from "@modules/products/components/thumbnail"
 import { usePathname } from "next/navigation"
 import { Fragment, useEffect, useRef, useState } from "react"
 
-// Pragul de la care livrarea e gratuită (în lei). Schimbă-l aici dacă oferta diferă.
-const FREE_SHIPPING_THRESHOLD = 200
-
 const CartDropdown = ({
   cart: cartState,
+  freeShippingThreshold = null,
 }: {
   cart?: HttpTypes.StoreCart | null
+  freeShippingThreshold?: number | null
 }) => {
   const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
     undefined
@@ -38,12 +37,12 @@ const CartDropdown = ({
       return acc + item.quantity
     }, 0) || 0
 
-  const subtotal = cartState?.subtotal ?? 0
+  const subtotal = cartState?.item_total ?? 0
   const itemRef = useRef<number>(totalItems || 0)
 
-  const remainingForFree = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0)
+  const remainingForFree = Math.max((freeShippingThreshold || 0) - subtotal, 0)
   const freeShippingPct = Math.min(
-    (subtotal / FREE_SHIPPING_THRESHOLD) * 100,
+    (subtotal / (freeShippingThreshold || 1)) * 100,
     100
   )
 
@@ -135,7 +134,7 @@ const CartDropdown = ({
             </div>
 
             {/* Bară progres livrare gratuită */}
-            {cartState && cartState.items?.length ? (
+            {freeShippingThreshold && cartState?.currency_code === "ron" && cartState.items?.length ? (
               <div className="px-5 pt-4">
                 {remainingForFree > 0 ? (
                   <p className="text-xs text-subtle mb-2">
@@ -146,14 +145,14 @@ const CartDropdown = ({
                         currency_code: cartState.currency_code,
                       })}
                     </span>{" "}
-                    pentru livrare gratuită
+                    pentru livrare gratuită prin eAWB în România
                   </p>
                 ) : (
                   <p className="text-xs font-medium text-emerald-600 mb-2 flex items-center gap-1.5">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
-                    Felicitări! Ai livrare gratuită
+                    Ai atins pragul pentru livrare gratuită prin eAWB
                   </p>
                 )}
                 <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">

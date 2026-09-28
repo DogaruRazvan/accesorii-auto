@@ -3,6 +3,7 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
+import medusaError from "@lib/util/medusa-error"
 
 export const listCartShippingMethods = async (cartId: string) => {
   const headers = {
@@ -23,7 +24,7 @@ export const listCartShippingMethods = async (cartId: string) => {
         },
         headers,
         next,
-        cache: "force-cache",
+        cache: "no-store",
       }
     )
     .then(({ shipping_options }) => shipping_options)
@@ -41,10 +42,6 @@ export const calculatePriceForShippingOption = async (
     ...(await getAuthHeaders()),
   }
 
-  const next = {
-    ...(await getCacheOptions("fulfillment")),
-  }
-
   const body = { cart_id: cartId, data }
 
   if (data) {
@@ -58,11 +55,14 @@ export const calculatePriceForShippingOption = async (
         method: "POST",
         body,
         headers,
-        next,
+        cache: "no-store",
       }
     )
     .then(({ shipping_option }) => shipping_option)
-    .catch((_e) => {
-      return null
-    })
+    .catch(medusaError)
+}
+
+export async function getShippingPolicy(): Promise<{ enabled: boolean; free_shipping_threshold: number | null }> {
+  return sdk.client.fetch<{ enabled: boolean; free_shipping_threshold: number | null }>("/store/eawb/config", { cache: "no-store" })
+    .catch(() => ({ enabled: false, free_shipping_threshold: null }))
 }

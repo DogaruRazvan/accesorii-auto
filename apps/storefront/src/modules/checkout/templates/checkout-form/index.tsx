@@ -21,8 +21,13 @@ export default async function CheckoutForm({
   const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? "")
 
   if (!shippingMethods || !paymentMethods) {
-    return null
+    return <p role="alert">Opțiunile de livrare sau plată nu pot fi încărcate momentan. Reîncărcați pagina.</p>
   }
+
+  const shippingData = cart.shipping_methods?.at(-1)?.data
+  const paymentMode = shippingData?.eawb ? shippingData.payment_mode : null
+  const allowedPayments = paymentMethods.filter((method) => !paymentMode ||
+    (paymentMode === "cod" ? method.id === "pp_system_default" : method.id.startsWith("pp_stripe_")))
 
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">
@@ -30,7 +35,7 @@ export default async function CheckoutForm({
 
       <Shipping cart={cart} availableShippingMethods={shippingMethods} />
 
-      <Payment cart={cart} availablePaymentMethods={paymentMethods} />
+      <Payment key={String(paymentMode || "default")} cart={cart} availablePaymentMethods={allowedPayments} />
 
       <Review cart={cart} />
     </div>

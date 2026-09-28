@@ -40,6 +40,11 @@
 
 # Medusa DTC Starter
 
+## Integrare transport eAWB
+
+Configurarea, activarea și testarea integrării sunt documentate în [docs/EAWB.md](docs/EAWB.md).
+Integrarea este dezactivată implicit până la completarea datelor magazinului.
+
 A production-ready monorepo starter for direct-to-consumer ecommerce stores powered by Medusa and Next.js. Includes a fully featured storefront with product browsing, cart, checkout, customer accounts, and order management.
 
 ## Features

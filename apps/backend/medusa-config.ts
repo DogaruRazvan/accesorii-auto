@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { eawbOptions } from './src/modules/eawb/config'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -6,6 +7,21 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 // pentru ramburs) ramane mereu disponibil. Stripe se adauga DOAR daca exista
 // STRIPE_API_KEY, ca backend-ul sa nu crape cand cheia nu e inca setata.
 const modules: any[] = []
+
+// Keep the existing manual provider available during rollout.
+if (process.env.EAWB_ENABLED === "true") {
+  modules.push({ resolve: "./src/modules/eawb-booking" })
+  modules.push({
+    resolve: "@medusajs/medusa/fulfillment",
+    dependencies: ["query", "eawbBooking"],
+    options: {
+      providers: [
+        { resolve: "@medusajs/medusa/fulfillment-manual", id: "manual" },
+        { resolve: "./src/modules/eawb", id: "eawb", options: eawbOptions() },
+      ],
+    },
+  })
+}
 
 // Recenzii produse (modul custom, mereu activ).
 modules.push({ resolve: "./src/modules/product-review" })

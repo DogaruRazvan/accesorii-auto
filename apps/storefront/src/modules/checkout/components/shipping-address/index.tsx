@@ -21,7 +21,9 @@ const ShippingAddress = ({
   const [formData, setFormData] = useState<Record<string, string>>({
     "shipping_address.first_name": cart?.shipping_address?.first_name || "",
     "shipping_address.last_name": cart?.shipping_address?.last_name || "",
-    "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
+    "shipping_address.address_1": String(cart?.shipping_address?.metadata?.eawb_street_name || cart?.shipping_address?.address_1 || ""),
+    "shipping_address.street_number": String(cart?.shipping_address?.metadata?.eawb_street_number || ""),
+    "shipping_address.address_2": cart?.shipping_address?.address_2 || "",
     "shipping_address.company": cart?.shipping_address?.company || "",
     "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
     "shipping_address.city": cart?.shipping_address?.city || "",
@@ -54,7 +56,9 @@ const ShippingAddress = ({
         ...prevState,
         "shipping_address.first_name": address?.first_name || "",
         "shipping_address.last_name": address?.last_name || "",
-        "shipping_address.address_1": address?.address_1 || "",
+        "shipping_address.address_1": String(address?.metadata?.eawb_street_name || address?.address_1 || ""),
+        "shipping_address.street_number": String(address?.metadata?.eawb_street_number || ""),
+        "shipping_address.address_2": address?.address_2 || "",
         "shipping_address.company": address?.company || "",
         "shipping_address.postal_code": address?.postal_code || "",
         "shipping_address.city": address?.city || "",
@@ -132,13 +136,30 @@ const ShippingAddress = ({
           data-testid="shipping-last-name-input"
         />
         <Input
-          label="Adresă"
+          label="Stradă (fără număr)"
           name="shipping_address.address_1"
           autoComplete="address-line1"
           value={formData["shipping_address.address_1"]}
           onChange={handleChange}
           required
           data-testid="shipping-address-input"
+        />
+        <Input
+          label="Număr stradă"
+          name="shipping_address.street_number"
+          value={formData["shipping_address.street_number"]}
+          onChange={handleChange}
+          required
+          maxLength={25}
+          data-testid="shipping-street-number-input"
+        />
+        <Input
+          label="Bloc, scară, etaj, apartament (opțional)"
+          name="shipping_address.address_2"
+          autoComplete="address-line2"
+          value={formData["shipping_address.address_2"]}
+          onChange={handleChange}
+          maxLength={60}
         />
         <Input
           label="Firmă (opțional)"
@@ -181,6 +202,7 @@ const ShippingAddress = ({
           autoComplete="address-level1"
           value={formData["shipping_address.province"]}
           onChange={handleChange}
+          required
           data-testid="shipping-province-input"
         />
       </div>
@@ -211,6 +233,7 @@ const ShippingAddress = ({
           autoComplete="tel"
           value={formData["shipping_address.phone"]}
           onChange={handleChange}
+          required
           data-testid="shipping-phone-input"
         />
       </div>

@@ -58,6 +58,8 @@ const Shipping: React.FC<ShippingProps> = ({
   const [calculatedPricesMap, setCalculatedPricesMap] = useState<
     Record<string, number>
   >({})
+  const [priceErrors, setPriceErrors] = useState<Record<string, string>>({})
+  const [priceReload, setPriceReload] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [shippingMethodId, setShippingMethodId] = useState<string | null>(
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
@@ -80,34 +82,36 @@ const Shipping: React.FC<ShippingProps> = ({
   const hasPickupOptions = !!_pickupMethods?.length
 
   useEffect(() => {
-    setIsLoadingPrices(true)
-
-    if (_shippingMethods?.length) {
-      const promises = _shippingMethods
-        .filter((sm) => sm.price_type === "calculated")
-        .map((sm) => calculatePriceForShippingOption(sm.id, cart.id))
-
-      if (promises.length) {
-        Promise.allSettled(promises).then((res) => {
-          const pricesMap: Record<string, number> = {}
-          res
-            .filter((r) => r.status === "fulfilled")
-            .forEach((p) => {
-              if (p.value?.id) {
-                pricesMap[p.value.id] = p.value.amount ?? 0
-              }
-            })
-
-          setCalculatedPricesMap(pricesMap)
-          setIsLoadingPrices(false)
+    let cancelled = false
+    const calculated = _shippingMethods?.filter((sm) => sm.price_type === "calculated") || []
+    setIsLoadingPrices(calculated.length > 0)
+    setCalculatedPricesMap({})
+    setPriceErrors({})
+    if (calculated.length) {
+      Promise.allSettled(calculated.map((sm) => calculatePriceForShippingOption(sm.id, cart.id))).then((results) => {
+        if (cancelled) return
+        const prices: Record<string, number> = {}
+        const errors: Record<string, string> = {}
+        results.forEach((result, index) => {
+          const id = calculated[index].id
+          if (result.status === "fulfilled" && typeof result.value?.amount === "number" && Number.isFinite(result.value.amount)) {
+            prices[id] = result.value.amount
+          } else {
+            errors[id] = result.status === "rejected" && result.reason instanceof Error
+              ? result.reason.message : "Tariful nu este disponibil momentan."
+          }
         })
-      }
+        setCalculatedPricesMap(prices)
+        setPriceErrors(errors)
+        setIsLoadingPrices(false)
+      })
     }
 
     if (_pickupMethods?.find((m) => m.id === shippingMethodId)) {
       setShowPickupOptions(PICKUP_OPTION_ON)
     }
-  }, [availableShippingMethods])
+    return () => { cancelled = true }
+  }, [availableShippingMethods, cart.id, cart.updated_at, priceReload])
 
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })
@@ -196,6 +200,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </span>
             </div>
             <div data-testid="delivery-options-container">
+              {!_shippingMethods?.length && !hasPickupOptions && <p role="alert">Nu există metode de livrare pentru această adresă.</p>}
               <div className="pb-8 md:pt-0 pt-2">
                 {hasPickupOptions && (
                   <RadioGroup
@@ -246,8 +251,7 @@ const Shipping: React.FC<ShippingProps> = ({
                   {_shippingMethods?.map((option) => {
                     const isDisabled =
                       option.price_type === "calculated" &&
-                      !isLoadingPrices &&
-                      typeof calculatedPricesMap[option.id] !== "number"
+                      (isLoadingPrices || typeof calculatedPricesMap[option.id] !== "number")
 
                     return (
                       <Radio
@@ -271,6 +275,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           />
                           <span className="text-base-regular">
                             {option.name}
+                            {priceErrors[option.id] && <span className="block text-xs text-rose-600" role="status">{priceErrors[option.id]}</span>}
                           </span>
                         </div>
                         <span className="justify-self-end text-content">
@@ -279,7 +284,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               amount: option.amount!,
                               currency_code: cart?.currency_code,
                             })
-                          ) : calculatedPricesMap[option.id] ? (
+                          ) : typeof calculatedPricesMap[option.id] === "number" ? (
                             convertToLocale({
                               amount: calculatedPricesMap[option.id],
                               currency_code: cart?.currency_code,
@@ -367,6 +372,13 @@ const Shipping: React.FC<ShippingProps> = ({
           )}
 
           <div>
+            {_shippingMethods?.some((m) => m.price_type === "calculated") && (
+              <button type="button" className="text-cta underline mb-4" disabled={isLoading || isLoadingPrices}
+                onClick={async () => {
+                  if (shippingMethodId) await handleSetShippingMethod(shippingMethodId, "shipping")
+                  setPriceReload((value) => value + 1)
+                }}>Actualizează și reconfirmă livrarea</button>
+            )}
             <ErrorMessage
               error={error}
               data-testid="delivery-option-error-message"
@@ -376,7 +388,8 @@ const Shipping: React.FC<ShippingProps> = ({
               className="mt-4 w-full small:w-fit"
               onClick={handleSubmit}
               isLoading={isLoading}
-              disabled={!cart.shipping_methods?.[0]}
+              disabled={!cart.shipping_methods?.[0] || isLoading || isLoadingPrices || !!error ||
+                (!!shippingMethodId && !!priceErrors[shippingMethodId])}
               data-testid="submit-delivery-option-button"
             >
               Continuă spre plată

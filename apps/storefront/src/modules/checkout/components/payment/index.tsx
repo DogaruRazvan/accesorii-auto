@@ -27,7 +27,7 @@ const Payment = ({
   availablePaymentMethods: { id: string }[]
 }) => {
   const activeSession = cart.payment_collection?.payment_sessions?.find(
-    (paymentSession) => paymentSession.status === "pending"
+    (paymentSession) => paymentSession.status === "pending" && availablePaymentMethods.some((method) => method.id === paymentSession.provider_id)
   )
 
   const [isLoading, setIsLoading] = useState(false)
@@ -145,6 +145,10 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
+          {cart.shipping_methods?.at(-1)?.data?.eawb === true && (
+            <Text className="mb-4">Metoda de plată corespunde livrării alese. Pentru a schimba între card și ramburs, reveniți la pasul Livrare.</Text>
+          )}
+          {!availablePaymentMethods.length && <Text role="alert">Metoda de plată pentru această livrare nu este disponibilă. Alegeți altă opțiune de livrare.</Text>}
           {!paidByGiftcard && availablePaymentMethods?.length && (
             <>
               <RadioGroup

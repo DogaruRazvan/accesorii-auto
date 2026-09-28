@@ -24,7 +24,7 @@ import { getLocale } from "./locale-actions"
 export async function retrieveCart(cartId?: string, fields?: string) {
   const id = cartId || (await getCartId())
   fields ??=
-    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name"
+    "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name, +shipping_methods.data"
 
   if (!id) {
     return null
@@ -339,7 +339,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     if (!formData) {
       throw new Error("No form data found when setting addresses")
     }
-    const cartId = getCartId()
+    const cartId = await getCartId()
     if (!cartId) {
       throw new Error("No existing cart found when setting addresses")
     }
@@ -348,8 +348,12 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
         last_name: formData.get("shipping_address.last_name"),
-        address_1: formData.get("shipping_address.address_1"),
-        address_2: "",
+        address_1: `${String(formData.get("shipping_address.address_1") || "").trim()}, nr. ${String(formData.get("shipping_address.street_number") || "").trim()}`,
+        address_2: formData.get("shipping_address.address_2") || "",
+        metadata: {
+          eawb_street_name: String(formData.get("shipping_address.address_1") || "").trim(),
+          eawb_street_number: String(formData.get("shipping_address.street_number") || "").trim(),
+        },
         company: formData.get("shipping_address.company"),
         postal_code: formData.get("shipping_address.postal_code"),
         city: formData.get("shipping_address.city"),

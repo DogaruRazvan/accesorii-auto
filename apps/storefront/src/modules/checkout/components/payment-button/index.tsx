@@ -24,7 +24,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
 
-  const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const shippingData = cart.shipping_methods?.at(-1)?.data
+  const paymentSession = cart.payment_collection?.payment_sessions?.find((s) =>
+    ["pending", "authorized"].includes(s.status) && (!shippingData?.eawb ||
+      (shippingData.payment_mode === "cod" ? isManual(s.provider_id) : isStripeLike(s.provider_id))))
 
   switch (true) {
     case isStripeLike(paymentSession?.provider_id):

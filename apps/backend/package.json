@@ -13,6 +13,9 @@
     "medusa"
   ],
   "scripts": {
+    "test:eawb": "jest --config jest.eawb.config.cjs --runInBand",
+    "eawb:check": "medusa exec ./src/scripts/eawb-check.ts",
+    "eawb:reconcile": "medusa exec ./src/scripts/eawb-reconcile.ts",
     "build": "medusa build",
     "start": "medusa start",
     "dev": "medusa develop",
