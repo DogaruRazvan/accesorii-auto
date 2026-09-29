@@ -100,7 +100,7 @@ export default function HeroScene({
 
   return (
     // Pista de scroll scurta — animatia se termina din ~1-2 sec de derulare.
-    <div ref={trackRef} className="relative h-[175vh] w-full bg-page">
+    <div ref={trackRef} data-home-reveal={done ? "true" : "false"} className="relative h-[175vh] w-full bg-page">
       {/* Inner pin: ramane fix sub nav (5rem) cat timp derulezi prin pista */}
       <div className="sticky top-20 h-[calc(100dvh-5rem)] w-full overflow-hidden">
 
