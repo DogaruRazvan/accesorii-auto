@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 
 const PHONE_DISPLAY = "0735 867 408"
 const PHONE_TEL = "+40735867408"
+const WHATSAPP_URL = "https://wa.me/40737502873"
 const EMAIL_DISPLAY = "Menvdivers@yahoo.com"
 const EMAIL = "menvdivers@yahoo.com"
 const STORE_ADDRESS = "Strada Traian nr. 19, oraș Hârșova, județ Constanța"
@@ -30,6 +31,15 @@ function MailIcon() {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="4" width="20" height="16" rx="2" />
       <path d="m22 7-10 6L2 7" />
+    </svg>
+  )
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M21 11.5a9 9 0 0 1-13.4 7.9L3 21l1.6-4.6A9 9 0 1 1 21 11.5Z" />
+      <path d="m8 7 2 3-1.2 1.2a10 10 0 0 0 4 4L14 14l3 2c-1 2-3 2-5 1a12 12 0 0 1-5-5c-1-2-1-4 1-5Z" />
     </svg>
   )
 }
@@ -149,7 +159,17 @@ export default function ContactPage() {
         </div>
 
         {/* CTA-uri */}
-        <div className="flex flex-col xsmall:flex-row gap-3 mb-12">
+        <div className="flex flex-col xsmall:flex-row xsmall:flex-wrap gap-3 mb-12">
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Scrie-ne pe WhatsApp la 0737 502 873 (se deschide într-o fereastră nouă)"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-green-700 text-white font-semibold transition-colors hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-700"
+          >
+            <WhatsAppIcon />
+            Scrie-ne pe WhatsApp
+          </a>
           <a
             href={`tel:${PHONE_TEL}`}
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-cta text-white font-semibold transition-colors hover:bg-cta-hover"
