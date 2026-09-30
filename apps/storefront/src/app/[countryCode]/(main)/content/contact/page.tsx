@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const PHONE_DISPLAY = "0735 867 408"
 const PHONE_TEL = "+40735867408"
-const WHATSAPP_URL = "https://wa.me/40737502873"
+const WHATSAPP_URL = "https://wa.me/40735867408"
 const EMAIL_DISPLAY = "Menvdivers@yahoo.com"
 const EMAIL = "menvdivers@yahoo.com"
 const STORE_ADDRESS = "Strada Traian nr. 19, oraș Hârșova, județ Constanța"
@@ -164,7 +164,7 @@ export default function ContactPage() {
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Scrie-ne pe WhatsApp la 0737 502 873 (se deschide într-o fereastră nouă)"
+            aria-label="Scrie-ne pe WhatsApp la 0735 867 408 (se deschide într-o fereastră nouă)"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-green-700 text-white font-semibold transition-colors hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-green-700"
           >
             <WhatsAppIcon />

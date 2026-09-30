@@ -3,10 +3,10 @@ import styles from "./styles.module.css"
 export default function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/40737502873"
+      href="https://wa.me/40735867408"
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Scrie-ne pe WhatsApp la 0737 502 873 (se deschide într-o fereastră nouă)"
+      aria-label="Scrie-ne pe WhatsApp la 0735 867 408 (se deschide într-o fereastră nouă)"
       className={styles.button}
     >
       <span className={styles.label}>Scrie-ne pe WhatsApp</span>
