@@ -50,5 +50,16 @@ export function eawbOptions(env: NodeJS.ProcessEnv = process.env): EawbOptions {
     auto_awb: create_awb && env.EAWB_AUTO_AWB !== "false",
     notify_email: env.EAWB_NOTIFY_EMAIL?.trim() || "menvdivers@yahoo.com",
     timeout_ms: positive("EAWB_TIMEOUT_MS", "15000"),
+    default_parcel: defaultParcel(env.EAWB_DEFAULT_PARCEL),
   }
+}
+
+/** "1000,30,20,10" = 1000 g, 30x20x10 cm. Empty = no fallback (products must have their own data). */
+function defaultParcel(value?: string) {
+  if (!value?.trim()) return undefined
+  const [weight, length, width, height] = value.split(/[,x×\s]+/).filter(Boolean).map(Number)
+  if (![weight, length, width, height].every((v) => Number.isFinite(v) && v > 0)) {
+    throw new Error("EAWB_DEFAULT_PARCEL trebuie să fie greutate_g,lungime_cm,lățime_cm,înălțime_cm (ex. 1000,30,20,10).")
+  }
+  return { weight, length, width, height }
 }

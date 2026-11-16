@@ -35,6 +35,13 @@ describe("eAWB shipment and live pricing", () => {
     const cart = context(); delete cart.items[0].variant![field]
     expect(() => buildShipment(cart, selected, options)).toThrow("greutatea sau dimensiunile")
   })
+  test("falls back to EAWB_DEFAULT_PARCEL only for missing values", () => {
+    const cart = context(); cart.items[0].variant = { weight: 300 }
+    const payload = buildShipment(cart, selected, { ...options, default_parcel: { weight: 1000, length: 30, width: 20, height: 10 } })
+    expect(payload.content.parcels[0].size).toEqual({ weight: 0.3, length: 30, width: 20, height: 10 })
+    expect(eawbOptions({ EAWB_API_KEY: "k", EAWB_DEFAULT_PARCEL: "1000,30,20,10" }).default_parcel).toEqual({ weight: 1000, length: 30, width: 20, height: 10 })
+    expect(() => eawbOptions({ EAWB_API_KEY: "k", EAWB_DEFAULT_PARCEL: "1kg" })).toThrow("EAWB_DEFAULT_PARCEL")
+  })
   test("requires an explicit street number, not a guessed split", () => {
     const cart = context(); cart.shipping_address.metadata = {}
     expect(() => buildShipment(cart, selected, options)).toThrow("numărul străzii")

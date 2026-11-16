@@ -18,6 +18,8 @@ export type EawbOptions = {
   /** Who receives the AWB label PDF by email. */
   notify_email: string
   timeout_ms: number
+  /** Fallback package for products without weight/dimensions: grams + cm. */
+  default_parcel?: { weight: number; length: number; width: number; height: number }
 }
 
 export type ShippingChoice = {

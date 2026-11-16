@@ -38,12 +38,17 @@ export default async function checkEawb({ container }: ExecArgs) {
       const dimensions = [variant.weight ?? variant.product?.weight, variant.length, variant.width, variant.height]
       if (dimensions.some((v) => !Number.isFinite(Number(v)) || Number(v) <= 0)) {
         missing++
-        logger.warn(`Completați greutatea/dimensiunile de ambalare: ${variant.sku || variant.id}`)
+        if (!options.default_parcel) logger.warn(`Completați greutatea/dimensiunile de ambalare: ${variant.sku || variant.id}`)
       }
     }
     if (variants.length < 100) break
     offset += 100
   }
-  logger.info(`Verificate ${checked} variante; ${missing} necesită date de ambalare. Nu a fost emis niciun AWB.`)
-  if (missing) throw new Error("Completați datele produselor înainte de activarea transportului eAWB.")
+  logger.info(`Verificate ${checked} variante; ${missing} fără date proprii de ambalare. Nu a fost emis niciun AWB.`)
+  if (missing && options.default_parcel) {
+    const d = options.default_parcel
+    logger.info(`eAWB: cele ${missing} variante folosesc pachetul implicit ${d.weight} g, ${d.length}x${d.width}x${d.height} cm.`)
+  } else if (missing) {
+    throw new Error("Completați datele produselor sau setați EAWB_DEFAULT_PARCEL înainte de activarea transportului eAWB.")
+  }
 }

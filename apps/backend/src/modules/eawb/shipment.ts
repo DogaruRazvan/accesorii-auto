@@ -50,10 +50,13 @@ export function buildShipment(context: ShipmentContext, selected: ShippingChoice
     const variant = item.variant || {}
     // One individually packed parcel per unit. No guessed weights or box sizes.
     // Catalogue convention: weight in grams, dimensions in centimetres.
-    const weight = Number(variant.weight ?? item.product?.weight)
-    const length = Number(variant.length)
-    const width = Number(variant.width)
-    const height = Number(variant.height)
+    // Missing values fall back to EAWB_DEFAULT_PARCEL when configured.
+    const d = options.default_parcel
+    const pick = (v: unknown, fallback?: number) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : fallback ?? NaN)
+    const weight = pick(variant.weight ?? item.product?.weight, d?.weight)
+    const length = pick(variant.length, d?.length)
+    const width = pick(variant.width, d?.width)
+    const height = pick(variant.height, d?.height)
     if ([weight, length, width, height].some((v) => !Number.isFinite(v) || v <= 0)) {
       invalid("Lipsesc greutatea sau dimensiunile de ambalare pentru un produs. Contactați magazinul.")
     }
