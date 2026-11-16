@@ -86,7 +86,8 @@ export default async function eawbSetup({ container }: ExecArgs) {
     logger.info("Opțiunile eAWB „cel mai ieftin curier” există deja.")
   }
 
-  const old = (options as any[]).filter((o) => o.provider_id !== "eawb_eawb")
+  const old = (options as any[]).filter((o) => o.provider_id !== "eawb_eawb" && o.service_zone?.fulfillment_set?.type === "shipping" &&
+    !/return/i.test(String(o.name)))
   if (old.length) {
     logger.warn(`Opțiuni vechi încă active (ștergeți-le din Admin → Settings → Locations & Shipping): ${old.map((o) => `"${o.name}"`).join(", ")}`)
   }

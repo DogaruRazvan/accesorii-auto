@@ -73,8 +73,9 @@ export class EawbClient {
           bank_iban: this.options.bank_iban || (p.bank_iban ? String(p.bank_iban).replace(/\s/g, "").toUpperCase() : undefined),
           bank_holder: this.options.bank_holder || (p.bank_holder ? String(p.bank_holder) : undefined),
         }
-        if (!result.billing_address_id) throw new Error("Contul eAWB nu are o adresă de facturare salvată.")
-        if (!result.sender_address_id) throw new Error("Contul eAWB nu are o adresă de ridicare salvată.")
+        const shape = (r: any) => (r == null ? "-" : Array.isArray(r) ? `listă[${r.length}]` : `{${Object.keys(r).join(",")}}`)
+        if (!result.billing_address_id) throw new Error(`Contul eAWB nu are o adresă de facturare salvată (răspuns ${shape(billing)}).`)
+        if (!result.sender_address_id) throw new Error(`Contul eAWB nu are o adresă de ridicare (expediere) salvată (răspuns ${shape(senders)}). Adăugați-o în eawb.ro → Adrese.`)
         return result
       }).catch((error) => { this.defaults = undefined; throw error })
     }
