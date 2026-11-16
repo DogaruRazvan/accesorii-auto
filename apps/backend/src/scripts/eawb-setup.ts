@@ -1,6 +1,6 @@
 import type { ExecArgs } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
-import { createShippingOptionsWorkflow } from "@medusajs/medusa/core-flows"
+import { createShippingOptionsWorkflow, deleteShippingOptionsWorkflow, updateShippingOptionsWorkflow } from "@medusajs/medusa/core-flows"
 import { eawbEnabled, eawbOptions } from "../modules/eawb/config"
 import { EawbClient } from "../modules/eawb/client"
 
@@ -16,6 +16,13 @@ import { EawbClient } from "../modules/eawb/client"
  * Rulează (cu EAWB_API_KEY setat):  npm run eawb:setup --workspace=@dtc/backend
  * Pe Railway rulează automat la fiecare deploy (preDeployCommand), fără să blocheze deploy-ul.
  */
+// Numele afișate clienților la checkout.
+const NAMES = { cod: "Livrare - plată ramburs", card: "Livrare - plată online" } as const
+// Nume vechi generate automat, înlocuite cu NAMES (un nume pus manual din admin nu e atins).
+const LEGACY_NAMES = ["Livrare prin curier — plată ramburs", "Livrare prin curier — plată cu cardul"]
+// Opțiunea veche cu preț fix, înlocuită de eAWB (ștearsă la cererea proprietarului, 2026-11-16).
+const REPLACED_FLAT_OPTIONS = ["livrare curier"]
+
 export default async function eawbSetup({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
@@ -62,7 +69,7 @@ export default async function eawbSetup({ container }: ExecArgs) {
   const toCreate = config.payment_modes
     .filter((mode) => !existing.some((o) => o.data?.auto === true && o.data?.payment_mode === mode))
     .map((payment_mode) => ({
-      name: payment_mode === "cod" ? "Livrare prin curier — plată ramburs" : "Livrare prin curier — plată cu cardul",
+      name: NAMES[payment_mode],
       service_zone_id: template.service_zone_id,
       shipping_profile_id: template.shipping_profile_id,
       provider_id: "eawb_eawb",
@@ -86,9 +93,24 @@ export default async function eawbSetup({ container }: ExecArgs) {
     logger.info("Opțiunile eAWB „cel mai ieftin curier” există deja.")
   }
 
+  const renames = existing
+    .filter((o) => LEGACY_NAMES.includes(String(o.name)) && (o.data?.payment_mode === "cod" || o.data?.payment_mode === "card"))
+    .map((o) => ({ id: o.id, name: NAMES[o.data.payment_mode as "cod" | "card"] }))
+  if (renames.length) {
+    await updateShippingOptionsWorkflow(container).run({ input: renames })
+    for (const r of renames) logger.info(`Redenumit: "${r.name}".`)
+  }
+
+  const replaced = (options as any[]).filter((o) => o.provider_id !== "eawb_eawb" && o.price_type === "flat" &&
+    REPLACED_FLAT_OPTIONS.includes(String(o.name).trim().toLowerCase()))
+  if (replaced.length) {
+    await deleteShippingOptionsWorkflow(container).run({ input: { ids: replaced.map((o) => o.id) } })
+    logger.info(`Șters opțiunea veche: ${replaced.map((o) => `"${o.name}"`).join(", ")}.`)
+  }
+
   const old = (options as any[]).filter((o) => o.provider_id !== "eawb_eawb" && o.service_zone?.fulfillment_set?.type === "shipping" &&
-    !/return/i.test(String(o.name)))
+    !/return/i.test(String(o.name)) && !replaced.includes(o))
   if (old.length) {
-    logger.warn(`Opțiuni vechi încă active (ștergeți-le din Admin → Settings → Locations & Shipping): ${old.map((o) => `"${o.name}"`).join(", ")}`)
+    logger.warn(`Alte opțiuni non-eAWB încă active: ${old.map((o) => `"${o.name}"`).join(", ")}`)
   }
 }

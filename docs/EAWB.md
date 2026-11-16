@@ -9,7 +9,7 @@
    Emailurile folosesc providerul Resend existent (`RESEND_API_KEY`, `RESEND_FROM`).
 2. La deploy, `preDeployCommand` rulează migrarea (tabelul `eawb_booking`).
 3. Rulați o dată: `railway run npm run eawb:setup --workspace=@dtc/backend`.
-   Creează opțiunile „Livrare prin curier — card / ramburs” (preț calculat live,
+   Creează opțiunile „Livrare - plată online / plată ramburs” (preț calculat live,
    **cel mai ieftin curier** pentru fiecare comandă) și activează providerul pe
    locația de stoc. Ștergeți apoi din admin opțiunile vechi cu preț fix.
 4. Rulați `railway run npm run eawb:check --workspace=@dtc/backend` și completați
