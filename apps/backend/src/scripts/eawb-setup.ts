@@ -2,6 +2,7 @@ import type { ExecArgs } from "@medusajs/framework/types"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { createShippingOptionsWorkflow } from "@medusajs/medusa/core-flows"
 import { eawbEnabled, eawbOptions } from "../modules/eawb/config"
+import { EawbClient } from "../modules/eawb/client"
 
 /**
  * Creeaza opțiunile de livrare eAWB „Cel mai ieftin curier” (card și/sau ramburs),
@@ -13,7 +14,7 @@ import { eawbEnabled, eawbOptions } from "../modules/eawb/config"
  * - NU șterge opțiunile vechi (flat); scoate-le din admin ca să nu apară două prețuri.
  *
  * Rulează (cu EAWB_API_KEY setat):  npm run eawb:setup --workspace=@dtc/backend
- * Pe Railway:  railway run npm run eawb:setup --workspace=@dtc/backend
+ * Pe Railway rulează automat la fiecare deploy (preDeployCommand), fără să blocheze deploy-ul.
  */
 export default async function eawbSetup({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -21,6 +22,17 @@ export default async function eawbSetup({ container }: ExecArgs) {
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   if (!eawbEnabled()) throw new Error("eAWB nu e activ: setați EAWB_API_KEY (și nu EAWB_ENABLED=false).")
   const config = eawbOptions()
+
+  // Diagnostic cont eAWB (fără date sensibile în log).
+  const client = new EawbClient(config)
+  try {
+    const d = await client.accountDefaults()
+    logger.info(`eAWB: adresa facturare #${d.billing_address_id}, adresa ridicare #${d.sender_address_id}, IBAN ramburs ${d.bank_iban ? "găsit (…" + d.bank_iban.slice(-4) + ")" : "LIPSĂ"}.`)
+    const carriers = (await client.services()).filter((s) => s.service_id === 1)
+    logger.info(`eAWB: curieri disponibili: ${carriers.map((c) => `${c.carrier_name} (#${c.carrier_id})`).join(", ") || "niciunul"}.`)
+  } catch (e: any) {
+    logger.error(`eAWB: contul nu poate fi citit — ${e?.message}`)
+  }
 
   const { data: options } = await query.graph({
     entity: "shipping_option",
