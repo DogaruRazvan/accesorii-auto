@@ -1,5 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import { eawbOptions } from './src/modules/eawb/config'
+import { eawbEnabled, eawbOptions } from './src/modules/eawb/config'
 
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
@@ -9,7 +9,8 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 const modules: any[] = []
 
 // Keep the existing manual provider available during rollout.
-if (process.env.EAWB_ENABLED === "true") {
+// eAWB porneste automat cand exista EAWB_API_KEY (vezi eawbEnabled).
+if (eawbEnabled()) {
   modules.push({ resolve: "./src/modules/eawb-booking" })
   modules.push({
     resolve: "@medusajs/medusa/fulfillment",

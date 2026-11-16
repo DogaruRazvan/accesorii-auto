@@ -10,6 +10,7 @@ import {
 import { Resend } from "resend"
 import { orderPlacedEmail } from "./templates/order-placed"
 import { orderPlacedAdminEmail } from "./templates/order-placed-admin"
+import { eawbAwbCreatedEmail, eawbAwbFailedEmail } from "./templates/eawb-awb"
 
 type Options = {
   api_key: string
@@ -27,6 +28,8 @@ const TEMPLATES: Record<
 > = {
   "order-placed": orderPlacedEmail,
   "order-placed-admin": orderPlacedAdminEmail,
+  "eawb-awb-created": eawbAwbCreatedEmail,
+  "eawb-awb-failed": eawbAwbFailedEmail,
 }
 
 class ResendNotificationProviderService extends AbstractNotificationProviderService {
@@ -76,6 +79,14 @@ class ResendNotificationProviderService extends AbstractNotificationProviderServ
       to: notification.to,
       subject,
       html,
+      // Ex.: eticheta AWB (PDF, base64) atasata la emailul catre magazin.
+      ...(notification.attachments?.length ? {
+        attachments: notification.attachments.map((a) => ({
+          filename: a.filename,
+          content: a.content,
+          ...(a.content_type ? { contentType: a.content_type } : {}),
+        })),
+      } : {}),
     })
 
     if (error) {

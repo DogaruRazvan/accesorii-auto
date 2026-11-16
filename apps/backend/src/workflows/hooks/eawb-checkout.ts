@@ -1,6 +1,6 @@
 import { completeCartWorkflow } from "@medusajs/medusa/core-flows"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
-import { eawbOptions } from "../../modules/eawb/config"
+import { eawbEnabled, eawbOptions } from "../../modules/eawb/config"
 import { choice, invalid, loadCart } from "../../modules/eawb/shipment"
 import { validateCheckout } from "../../modules/eawb/checkout-validation"
 
@@ -13,7 +13,7 @@ completeCartWorkflow.hooks.validate(async ({ cart }, { container }) => {
   const { data: options } = await query.graph({ entity: "shipping_option", fields: ["id", "provider_id", "price_type", "data"], filters: { id: ids as string[] } })
   const eawb = options.filter((o) => o.provider_id === "eawb_eawb")
   if (!eawb.length) return
-  if (process.env.EAWB_ENABLED !== "true") invalid("Livrarea eAWB este indisponibilă momentan.")
+  if (!eawbEnabled()) invalid("Livrarea eAWB este indisponibilă momentan.")
   if (eawb.length !== 1 || cart.shipping_methods.length !== 1) invalid("Selectați o singură metodă eAWB.")
   if (eawb[0].price_type !== "calculated") invalid("Opțiunea eAWB trebuie configurată cu preț calculat în administrarea magazinului.")
   const config = eawbOptions()

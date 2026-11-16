@@ -1,12 +1,12 @@
 import type { AuthenticatedMedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { EawbClient } from "../../../../../modules/eawb/client"
-import { eawbOptions } from "../../../../../modules/eawb/config"
+import { eawbEnabled, eawbOptions } from "../../../../../modules/eawb/config"
 import type EawbBookingService from "../../../../../modules/eawb-booking/service"
 import { safeUrl } from "../../../../../modules/eawb/service"
 
 // /admin routes use Medusa's built-in authenticated user middleware.
 export async function GET(req: AuthenticatedMedusaRequest, res: MedusaResponse) {
-  if (process.env.EAWB_ENABLED !== "true") return res.json({ enabled: false, booking: null })
+  if (!eawbEnabled()) return res.json({ enabled: false, booking: null })
   const registry = req.scope.resolve<EawbBookingService>("eawbBooking")
   const [booking] = await registry.listEawbBookings({ order_id: req.params.id })
   if (!booking) return res.json({ enabled: true, booking: null })

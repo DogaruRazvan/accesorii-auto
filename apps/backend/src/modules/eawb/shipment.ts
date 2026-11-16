@@ -11,6 +11,13 @@ export const money = (value: number) => Math.round((value + Number.EPSILON) * 10
 export function choice(data: Record<string, unknown>, options: EawbOptions): ShippingChoice {
   const carrier_id = Number(data.carrier_id)
   const payment_mode = data.payment_mode
+  // "Cel mai ieftin curier": carrier picked per order from the live rates.
+  if (data.auto === true || carrier_id === 0) {
+    if (Number(data.service_id) !== 1 || (payment_mode !== "card" && payment_mode !== "cod") || !options.payment_modes.includes(payment_mode)) {
+      invalid("Opțiunea eAWB nu este disponibilă.")
+    }
+    return { carrier_id: 0, auto: true, service_id: 1, payment_mode }
+  }
   if (!Number.isSafeInteger(carrier_id) || carrier_id <= 0 || Number(data.service_id) !== 1 ||
     (options.carrier_ids.length && !options.carrier_ids.includes(carrier_id)) ||
     (payment_mode !== "card" && payment_mode !== "cod") || !options.payment_modes.includes(payment_mode)) {

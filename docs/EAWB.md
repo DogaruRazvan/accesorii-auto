@@ -1,5 +1,35 @@
 # Integrare eAWB / Europarcel
 
+## Pornire rapidă (Railway)
+
+1. În serviciul backend de pe Railway setați **doar** `EAWB_API_KEY`. Cu cheia
+   setată, eAWB pornește automat (`EAWB_ENABLED=false` îl oprește). Adresele de
+   facturare/ridicare și IBAN-ul pentru ramburs se iau din contul eAWB (adresele
+   marcate implicite + profilul contului), dacă nu sunt setate explicit.
+   Emailurile folosesc providerul Resend existent (`RESEND_API_KEY`, `RESEND_FROM`).
+2. La deploy, `preDeployCommand` rulează migrarea (tabelul `eawb_booking`).
+3. Rulați o dată: `railway run npm run eawb:setup --workspace=@dtc/backend`.
+   Creează opțiunile „Livrare prin curier — card / ramburs” (preț calculat live,
+   **cel mai ieftin curier** pentru fiecare comandă) și activează providerul pe
+   locația de stoc. Ștergeți apoi din admin opțiunile vechi cu preț fix.
+4. Rulați `railway run npm run eawb:check --workspace=@dtc/backend` și completați
+   greutatea (grame) și dimensiunile (cm) ale fiecărui produs ambalat. Fără ele,
+   livrarea eAWB nu se poate calcula la checkout.
+
+Comportament:
+- **Preț optimizat**: la checkout se cer tarife de la toți curierii disponibili
+  (sau doar `EAWB_CARRIER_IDS`) și clientul plătește cel mai mic tarif. La emiterea
+  AWB-ului tarifele se verifică din nou și se cumpără de la cel mai ieftin curier.
+- **Livrare gratuită** peste `EAWB_FREE_SHIPPING_THRESHOLD` (implicit 500 lei,
+  totalul produselor după reduceri); magazinul plătește curierul cel mai ieftin.
+- **AWB automat** la plasarea comenzii: ramburs imediat, card după încasarea
+  plății. Eticheta PDF + detaliile se trimit pe `EAWB_NOTIFY_EMAIL`
+  (implicit `menvdivers@yahoo.com`). Dacă emiterea eșuează, se trimite un email
+  de alertă pe aceeași adresă. Oprire: `EAWB_AUTO_AWB=false` (rămâne emiterea
+  manuală din **Fulfill items**) sau `EAWB_CREATE_AWB_ENABLED=false` (deloc).
+
+Detaliile de mai jos descriu restul integrării (siguranță, reconciliere).
+
 Implementare pentru Medusa 2.15.5 și Next.js 15. Configurația implicită este
 dezactivată; nu se emit AWB-uri și nu se modifică opțiunile existente la instalare.
 

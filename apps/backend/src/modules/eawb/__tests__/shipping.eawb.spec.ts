@@ -1,6 +1,6 @@
 import { buildShipment, choice, shippingFingerprint } from "../shipment"
 import { quote } from "../pricing"
-import { eawbOptions } from "../config"
+import { eawbEnabled, eawbOptions } from "../config"
 import { validateCheckout } from "../checkout-validation"
 import EawbProviderService from "../service"
 import { EawbApiError, EawbClient } from "../client"
@@ -10,7 +10,7 @@ const options: EawbOptions = {
   api_key: "test-key", base_url: "https://example.invalid/api/public", billing_address_id: 1,
   sender_address_id: 2, carrier_ids: [3], payment_modes: ["card", "cod"],
   free_shipping_threshold: 500, bank_iban: "RO49AAAA1B31007593840000", bank_holder: "Test",
-  create_awb: false, timeout_ms: 1000,
+  create_awb: false, auto_awb: false, notify_email: "shop@example.invalid", timeout_ms: 1000,
 }
 const selected: ShippingChoice = { carrier_id: 3, service_id: 1, payment_mode: "card" }
 function context(): ShipmentContext {
@@ -114,7 +114,69 @@ describe("eAWB shipment and live pricing", () => {
     expect(() => eawbOptions({})).toThrow("EAWB_API_KEY")
     const config = eawbOptions({ EAWB_API_KEY: "test", EAWB_BILLING_ADDRESS_ID: "1", EAWB_SENDER_ADDRESS_ID: "2", EAWB_PAYMENT_MODES: "card", EAWB_FREE_SHIPPING_THRESHOLD: "off" })
     expect(config.free_shipping_threshold).toBeNull()
-    expect(config.create_awb).toBe(false)
+    expect(config.create_awb).toBe(true)
+    expect(config.auto_awb).toBe(true)
+    expect(config.notify_email).toBe("menvdivers@yahoo.com")
+    expect(eawbOptions({ EAWB_API_KEY: "test", EAWB_CREATE_AWB_ENABLED: "false" })).toMatchObject({ create_awb: false, auto_awb: false })
+    expect(eawbOptions({ EAWB_API_KEY: "test", EAWB_AUTO_AWB: "false" })).toMatchObject({ create_awb: true, auto_awb: false })
+  })
+  test("only EAWB_API_KEY is needed: addresses/IBAN default to the eAWB account", () => {
+    expect(eawbEnabled({ EAWB_API_KEY: "k" })).toBe(true)
+    expect(eawbEnabled({ EAWB_API_KEY: "k", EAWB_ENABLED: "false" })).toBe(false)
+    expect(eawbEnabled({})).toBe(false)
+    expect(eawbOptions({ EAWB_API_KEY: "k" })).toMatchObject({ billing_address_id: 0, sender_address_id: 0, payment_modes: ["card", "cod"], free_shipping_threshold: 500 })
+  })
+  test("prepare fills default addresses and COD bank account from the account", async () => {
+    const client = new EawbClient({ ...options, billing_address_id: 0, sender_address_id: 0, bank_iban: undefined, bank_holder: undefined })
+    const request = jest.spyOn(client, "request").mockImplementation(async (path: string) => {
+      if (path.startsWith("/addresses/billing")) return { data: [{ id: 7 }, { id: 8, is_default: true }] } as any
+      if (path.startsWith("/addresses/shipping")) return { data: [{ id: 9, is_default: true }] } as any
+      return { data: { bank_iban: "RO49 AAAA 1B31 0075 9384 0000", bank_holder: "Magazin" } } as any
+    })
+    const body = buildShipment(context(), { ...selected, payment_mode: "cod" }, { ...options, billing_address_id: 0, sender_address_id: 0, bank_iban: undefined, bank_holder: undefined })
+    const out = await client.prepare(body)
+    expect(out.billing_to.billing_address_id).toBe(8)
+    expect(out.address_from.address_from_id).toBe(9)
+    expect(out.extra).toMatchObject({ bank_iban: "RO49AAAA1B31007593840000", bank_holder: "Magazin" })
+    expect(body.billing_to.billing_address_id).toBe(0)
+    await client.prepare(body)
+    expect(request).toHaveBeenCalledTimes(3)
+  })
+})
+
+describe("eAWB cheapest courier (auto)", () => {
+  const auto: ShippingChoice = { carrier_id: 0, auto: true, service_id: 1, payment_mode: "card" }
+  const r = (carrier_id: number, total: number, currency = "RON") => ({ carrier_id, service_id: 1, price: { amount: total, vat: 0, total, currency } })
+  const multi = { ...options, carrier_ids: [] as number[] }
+  test("auto choice is accepted for both payment modes, even with an allowlist", () => {
+    expect(choice({ carrier_id: 0, auto: true, service_id: 1, payment_mode: "cod" }, options)).toEqual({ carrier_id: 0, auto: true, service_id: 1, payment_mode: "cod" })
+    expect(() => choice({ carrier_id: 0, auto: true, service_id: 2, payment_mode: "card" }, options)).toThrow()
+  })
+  test("customer pays the cheapest valid carrier price", async () => {
+    const client = { allRates: jest.fn().mockResolvedValue([r(5, 17.5), r(3, 21)]) }
+    const result = await quote(client as any, context(), auto, multi)
+    expect(result).toMatchObject({ amount: 17.5, carrier_id: 5 })
+  })
+  test("free shipping over 500 still picks the cheapest carrier for the store", async () => {
+    const cart = context(); cart.item_total = 520
+    const client = { allRates: jest.fn().mockResolvedValue([r(5, 17.5), r(3, 21)]) }
+    expect(await quote(client as any, cart, auto, multi)).toMatchObject({ amount: 0, carrier_amount: 17.5, carrier_id: 5 })
+  })
+  test("allRates filters invalid/foreign rates, sorts by price and falls back to per-carrier quotes", async () => {
+    const client = new EawbClient({ ...options, carrier_ids: [3, 5] })
+    jest.spyOn(client, "services").mockResolvedValue([3, 5, 6].map((carrier_id) => ({ carrier_id, carrier_name: `C${carrier_id}`, service_id: 1, service_name: "Standard" })))
+    const prices = jest.spyOn(client, "prices").mockImplementation(async (body) => {
+      if (body.carrier_id === 0) return []
+      if (body.carrier_id === 3) return [r(3, 25)]
+      if (body.carrier_id === 5) return [r(5, 19), r(5, 1, "EUR")]
+      throw new EawbApiError(422, false)
+    })
+    const body = buildShipment(context(), auto, options)
+    expect((await client.allRates(body)).map((x) => [x.carrier_id, x.price.total])).toEqual([[5, 19], [3, 25]])
+    expect(prices.mock.calls.map((c) => c[0].carrier_id)).toEqual([0, 3, 5])
+  })
+  test("no carrier available means no price, never free shipping by accident", async () => {
+    await expect(quote({ allRates: async () => [] } as any, context(), auto, multi)).rejects.toThrow("tarif eAWB valid")
   })
 })
 

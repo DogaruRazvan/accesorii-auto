@@ -3,7 +3,9 @@ export type PaymentMode = "card" | "cod"
 export type EawbOptions = {
   api_key: string
   base_url: string
+  /** 0 = use the account's default billing address (resolved from eAWB). */
   billing_address_id: number
+  /** 0 = use the account's default pickup address (resolved from eAWB). */
   sender_address_id: number
   carrier_ids: number[]
   payment_modes: PaymentMode[]
@@ -11,11 +13,17 @@ export type EawbOptions = {
   bank_iban?: string
   bank_holder?: string
   create_awb: boolean
+  /** Issue the AWB automatically right after the order is placed (card: after capture). */
+  auto_awb: boolean
+  /** Who receives the AWB label PDF by email. */
+  notify_email: string
   timeout_ms: number
 }
 
 export type ShippingChoice = {
+  /** 0 together with auto=true: the cheapest allowed carrier is picked per order. */
   carrier_id: number
+  auto?: boolean
   service_id: 1
   payment_mode: PaymentMode
 }
@@ -61,6 +69,7 @@ export type ShipmentRequest = {
 
 export type Rate = {
   carrier_id: number
+  carrier?: string
   service_id: number
   price: { amount: number; vat: number; total: number; currency: string }
 }

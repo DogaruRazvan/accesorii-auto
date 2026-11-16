@@ -3,7 +3,7 @@ import type { CalculateShippingOptionPriceDTO, CreateFulfillmentResult, Fulfillm
 import type EawbBookingService from "../eawb-booking/service"
 import { EawbClient } from "./client"
 import { buildShipment, choice, invalid, loadCart, money, shippingFingerprint } from "./shipment"
-import { quote } from "./pricing"
+import { bestRate, quote } from "./pricing"
 import type { EawbOptions, ShipmentContext } from "./types"
 
 export default class EawbProviderService extends AbstractFulfillmentProviderService {
@@ -16,12 +16,19 @@ export default class EawbProviderService extends AbstractFulfillmentProviderServ
 
   async getFulfillmentOptions() {
     const services = await this.client.services()
-    return services.filter((s) => s.service_id === 1 && (!this.options.carrier_ids.length || this.options.carrier_ids.includes(s.carrier_id)))
+    // Recommended: one "cheapest courier" option per payment mode. The carrier is
+    // picked per order from live rates (at checkout and again when the AWB is issued).
+    const auto = this.options.payment_modes.map((payment_mode) => ({
+      id: `auto-1-${payment_mode}`,
+      name: `Cel mai ieftin curier (automat) — ${payment_mode === "cod" ? "ramburs" : "plată cu cardul"}`,
+      carrier_id: 0, auto: true, service_id: 1, payment_mode,
+    }))
+    return [...auto, ...services.filter((s) => s.service_id === 1 && (!this.options.carrier_ids.length || this.options.carrier_ids.includes(s.carrier_id)))
       .flatMap((s) => this.options.payment_modes.map((payment_mode) => ({
         id: `${s.carrier_id}-1-${payment_mode}`,
         name: `${s.carrier_name} — ${payment_mode === "cod" ? "ramburs" : "plată cu cardul"}`,
         carrier_id: s.carrier_id, service_id: 1, payment_mode,
-      })))
+      })))]
   }
 
   async validateOption(data: Record<string, unknown>) {
@@ -67,20 +74,28 @@ export default class EawbProviderService extends AbstractFulfillmentProviderServ
     if (physical.length !== items.length || physical.some((i) => items.filter((f) => f.line_item_id === i.id).reduce((sum, f) => sum + Number(f.quantity), 0) !== Number(i.quantity))) {
       invalid("Integrarea eAWB expediază comanda integral. Selectați toate produsele și cantitățile.")
     }
-    const selected = choice(fullOrder.shipping_methods[0].data, this.options)
+    const chosen = choice(fullOrder.shipping_methods[0].data, this.options)
     const payments = (fullOrder.payment_collections || []).flatMap((p: any) => p.payments || [])
     const captured = payments.filter((p: any) => p.provider_id?.startsWith("pp_stripe_") && !p.canceled_at)
       .reduce((total: number, p: any) => total + (p.captures || []).reduce((sum: number, c: any) => sum + Number(c.amount), 0) -
         (p.refunds || []).reduce((sum: number, r: any) => sum + Number(r.amount), 0), 0)
-    if (selected.payment_mode === "card" && money(captured) < money(Number(fullOrder.total))) {
+    if (chosen.payment_mode === "card" && money(captured) < money(Number(fullOrder.total))) {
       invalid("Plata cu cardul trebuie încasată înainte de emiterea AWB.")
     }
-    if (selected.payment_mode === "cod" && !payments.some((p: any) => p.provider_id === "pp_system_default" && !p.canceled_at)) {
+    if (chosen.payment_mode === "cod" && !payments.some((p: any) => p.provider_id === "pp_system_default" && !p.canceled_at)) {
       invalid("Comanda nu are o plată ramburs validă.")
     }
-    const request = buildShipment(fullOrder, selected, this.options)
+    let request = buildShipment(fullOrder, chosen, this.options)
     request.extra.internal_identifier = fullOrder.id
-    if (selected.payment_mode === "cod") request.extra.bank_repayment_amount = money(Number(fullOrder.total))
+    if (chosen.payment_mode === "cod") request.extra.bank_repayment_amount = money(Number(fullOrder.total))
+    // "Cheapest courier": re-check live rates now and buy from the cheapest carrier.
+    const selected = chosen.auto
+      ? { ...chosen, auto: false, carrier_id: (await bestRate(this.client, request, chosen)).carrier_id }
+      : chosen
+    request.carrier_id = selected.carrier_id
+    // Resolve account defaults (addresses, IBAN) BEFORE the booking registry marks the
+    // order as pending, so a configuration error never blocks a later retry.
+    request = await this.client.prepare(request)
     const booked = await this.dependencies.eawbBooking.bookOnce(fullOrder.id, request, this.client)
     if (booked.carrier_id !== selected.carrier_id || booked.service_id !== selected.service_id) {
       invalid("AWB-ul salvat nu corespunde serviciului ales. Verificați reconcilierea în registrul eAWB.")
@@ -92,7 +107,7 @@ export default class EawbProviderService extends AbstractFulfillmentProviderServ
       labelUrl = String(label.download_url || "")
     } catch { /* The authenticated admin endpoint can retrieve a fresh link later. */ }
     return {
-      data: { ...selected, eawb: true, eawb_order_id: booked.order_id, eawb_medusa_order_id: fullOrder.id, eawb_awb: booked.awb_number },
+      data: { ...selected, eawb_auto: !!chosen.auto, eawb: true, eawb_order_id: booked.order_id, eawb_medusa_order_id: fullOrder.id, eawb_awb: booked.awb_number },
       labels: [{ tracking_number: booked.awb_number, tracking_url: safeUrl(booked.track_url), label_url: safeUrl(labelUrl) }],
     }
   }
