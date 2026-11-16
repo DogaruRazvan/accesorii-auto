@@ -30,12 +30,13 @@ export default async function checkEawb({ container }: ExecArgs) {
   let checked = 0
   while (true) {
     const { data: variants } = await query.graph({
-      entity: "product_variant", fields: ["id", "sku", "weight", "length", "width", "height", "product.weight"],
+      entity: "product_variant", fields: ["id", "sku", "weight", "length", "width", "height", "product.title", "product.weight", "product.length", "product.width", "product.height"],
       pagination: { skip: offset, take: 100 },
     })
     for (const variant of variants) {
       checked++
-      const dimensions = [variant.weight ?? variant.product?.weight, variant.length, variant.width, variant.height]
+      const p: Record<string, any> = variant.product || {}
+      const dimensions = [variant.weight ?? p.weight, variant.length ?? p.length, variant.width ?? p.width, variant.height ?? p.height]
       if (dimensions.some((v) => !Number.isFinite(Number(v)) || Number(v) <= 0)) {
         missing++
         if (!options.default_parcel) logger.warn(`Completați greutatea/dimensiunile de ambalare: ${variant.sku || variant.id}`)

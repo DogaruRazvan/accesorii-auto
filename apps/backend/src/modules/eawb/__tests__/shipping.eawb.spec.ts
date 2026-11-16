@@ -39,6 +39,9 @@ describe("eAWB shipment and live pricing", () => {
     const cart = context(); cart.items[0].variant = { weight: 300 }
     const payload = buildShipment(cart, selected, { ...options, default_parcel: { weight: 1000, length: 30, width: 20, height: 10 } })
     expect(payload.content.parcels[0].size).toEqual({ weight: 0.3, length: 30, width: 20, height: 10 })
+    const fromProduct = context(); fromProduct.items[0].variant = {}; fromProduct.items[0].product = { weight: 2500, length: 50, width: 40, height: 30 }
+    expect(buildShipment(fromProduct, selected, { ...options, default_parcel: { weight: 1000, length: 30, width: 20, height: 10 } }).content.parcels[0].size)
+      .toEqual({ weight: 2.5, length: 50, width: 40, height: 30 })
     expect(eawbOptions({ EAWB_API_KEY: "k", EAWB_DEFAULT_PARCEL: "1000,30,20,10" }).default_parcel).toEqual({ weight: 1000, length: 30, width: 20, height: 10 })
     expect(() => eawbOptions({ EAWB_API_KEY: "k", EAWB_DEFAULT_PARCEL: "1kg" })).toThrow("EAWB_DEFAULT_PARCEL")
   })

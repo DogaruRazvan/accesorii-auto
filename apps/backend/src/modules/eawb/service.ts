@@ -64,7 +64,7 @@ export default class EawbProviderService extends AbstractFulfillmentProviderServ
     if (!order?.id) invalid("Comanda lipsește din cererea de expediere.")
     const { data } = await this.dependencies.query.graph({
       entity: "order", filters: { id: order.id },
-      fields: ["id", "email", "currency_code", "item_total", "total", "status", "shipping_address.*", "items.*", "items.variant.*", "items.product.weight", "shipping_methods.*", "fulfillments.*", "payment_collections.payments.*", "payment_collections.payments.captures.*", "payment_collections.payments.refunds.*"],
+      fields: ["id", "email", "currency_code", "item_total", "total", "status", "shipping_address.*", "items.*", "items.variant.*", "items.product.weight", "items.product.length", "items.product.width", "items.product.height", "shipping_methods.*", "fulfillments.*", "payment_collections.payments.*", "payment_collections.payments.captures.*", "payment_collections.payments.refunds.*"],
     })
     const fullOrder = data[0] as ShipmentContext
     if (!fullOrder || fullOrder.status === "canceled") invalid("Comanda nu poate fi expediată.")

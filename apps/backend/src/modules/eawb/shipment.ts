@@ -54,9 +54,11 @@ export function buildShipment(context: ShipmentContext, selected: ShippingChoice
     const d = options.default_parcel
     const pick = (v: unknown, fallback?: number) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : fallback ?? NaN)
     const weight = pick(variant.weight ?? item.product?.weight, d?.weight)
-    const length = pick(variant.length, d?.length)
-    const width = pick(variant.width, d?.width)
-    const height = pick(variant.height, d?.height)
+    // Priority: variant value -> product value -> EAWB_DEFAULT_PARCEL.
+    const product = item.product || {}
+    const length = pick(variant.length ?? product.length, d?.length)
+    const width = pick(variant.width ?? product.width, d?.width)
+    const height = pick(variant.height ?? product.height, d?.height)
     if ([weight, length, width, height].some((v) => !Number.isFinite(v) || v <= 0)) {
       invalid("Lipsesc greutatea sau dimensiunile de ambalare pentru un produs. Contactați magazinul.")
     }
@@ -105,7 +107,7 @@ export function shippingFingerprint(context: ShipmentContext, selected: Shipping
 
 export const cartFields = [
   "id", "email", "currency_code", "item_total", "total", "shipping_address.*", "items.*",
-  "items.variant.*", "items.product.weight", "shipping_methods.*",
+  "items.variant.*", "items.product.weight", "items.product.length", "items.product.width", "items.product.height", "shipping_methods.*",
   "payment_collection.payment_sessions.*",
 ]
 
